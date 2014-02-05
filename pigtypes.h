@@ -12,7 +12,7 @@
 
 #define MAX_NAME	60
 
-typedef struct tuple_t;
+struct tuple_s;
 
 // Type of an element (basic type or tuple).
 typedef struct element_s {
@@ -23,7 +23,7 @@ typedef struct element_s {
     double d;
     long l;
     char *s;
-    tuple_t *t; // tuple
+    struct tuple_s *t; // tuple
   } u;
 } element_t;
 
@@ -36,7 +36,13 @@ typedef struct row_s {
 // Type of a relation.
 typedef struct relation_s {
   char name[MAX_NAME];
-  row_t* head_row;
+  struct tuple_s* row_tuple;
 } relation_t;
+
+//
+// Miscellaneous Types and definitions
+//
+
+#define MAX_FILENAME	80
 
 #endif // __PIGTYPES_H__
