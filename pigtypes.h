@@ -45,4 +45,14 @@ typedef struct relation_s {
 
 #define MAX_FILENAME	80
 
+//
+// Parser Functions
+//
+
+#define MAX_RELATION_NAME	80
+
+int parseLoad( char* line );
+int parseDump( char* line );
+
+
 #endif // __PIGTYPES_H__
