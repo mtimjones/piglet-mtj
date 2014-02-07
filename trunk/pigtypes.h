@@ -40,19 +40,28 @@ typedef struct relation_s {
 } relation_t;
 
 //
+// Helper functions
+//
+#define max(x,y)	((x > y) ? x : y)
+
+//
 // Miscellaneous Types and definitions
 //
 
 #define MAX_FILENAME	80
 
 //
-// Parser Functions
+// Public Functions
 //
 
 #define MAX_RELATION_NAME	80
 
+void initRelations( void );
+
 int parseLoad( char* line );
 int parseDump( char* line );
+
+int executeLoad( char* relation, char* filename, char delimiter );
 
 
 #endif // __PIGTYPES_H__
