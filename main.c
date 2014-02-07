@@ -62,6 +62,8 @@ int main( int argc, char *argv[] )
 {
   int opt;
 
+  initRelations();
+
   while ((opt = getopt(argc, argv, "vf:")) != -1)
   {
     switch (opt)

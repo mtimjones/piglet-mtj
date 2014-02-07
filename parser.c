@@ -13,7 +13,11 @@ int parseLoad( char* line )
   
   ret = sscanf(line, "%s = LOAD %s DELIM '%c';", relation, filename, &delim);
 
-  printf(" relation %s, filename %s, delim %c\n", relation, filename, delim);
+  // Expecting 3 parsed arguments.
+  if (ret == 3)
+  {
+    ret = executeLoad( relation, filename, delim ); 
+  }
 
   return ret;
 }
