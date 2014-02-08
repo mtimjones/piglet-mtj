@@ -5,14 +5,15 @@
 
 #include <stdio.h>
 
-#define LONG	1
-#define DOUBLE	2
-#define STRING  3
-#define TUPLE   4
+#define LONG	   1
+#define DOUBLE	   2
+#define CHARARRAY  3
+#define BYTEARRAY  4
+#define TUPLE      5
 
 #define MAX_NAME	60
 
-struct tuple_s;
+//struct tuple_s;
 
 // Type of an element (basic type or tuple).
 typedef struct element_s {
@@ -28,8 +29,8 @@ typedef struct element_s {
 } element_t;
 
 // Type of a row of a relation.
-typedef struct row_s {
-  struct row_s* next;
+typedef struct tuple_s {
+  struct tuple_s* next;
   element_t* head_element;
 } tuple_t;
 
@@ -44,6 +45,8 @@ typedef struct relation_s {
 //
 #define max(x,y)	((x > y) ? x : y)
 
+size_t trimwhitespace( char* out, size_t len, const char* str );
+
 //
 // Miscellaneous Types and definitions
 //
@@ -57,11 +60,19 @@ typedef struct relation_s {
 #define MAX_RELATION_NAME	80
 
 void initRelations( void );
+relation_t* allocateRelation( char* name );
+relation_t* findRelation( char* name );
+
+tuple_t* allocateTuple( void );
+void addTupleToRelation( tuple_t* tuple, relation_t* relation );
+void deallocateTuple( tuple_t* tuple );
+
+element_t* allocateElement( void );
 
 int parseLoad( char* line );
 int parseDump( char* line );
 
-int executeLoad( char* relation, char* filename, char delimiter );
+int executeLoad( char* relation_name, char* filename, char delimiter );
 
 
 #endif // __PIGTYPES_H__
