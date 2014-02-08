@@ -1,7 +1,11 @@
 // Via Stackoverflow
 
 #include <string.h>
+#include <stdlib.h>
 #include <ctype.h>
+#include <assert.h>
+#include "pigtypes.h"
+
 
 int trimwhitespace(char *out, int len, const char *str)
 {
@@ -34,3 +38,49 @@ int trimwhitespace(char *out, int len, const char *str)
 
   return out_size;
 }
+
+
+void listAdd( struct link_s* list, struct link_s* item )
+{
+  assert(list);
+  assert(item);
+
+  item->next = item->prev = NULL;
+
+  if (list->prev) 
+  {
+    // Non-empty list, item added to the tail
+    list->prev->next = item;
+    item->prev = list->prev;
+    list->prev = item;
+  }
+  else
+  {
+    // Empty list, single item added
+    list->next = item;
+    list->prev = item;
+  }
+
+  return;
+}
+
+
+void *allocateByteArray( int size )
+{
+  return calloc( 1, size );
+}
+
+void printByteArray( element_t* element )
+{
+  int i;
+
+  assert( element->type == BYTEARRAY);
+
+  for (i = 0 ; i < element->size)
+  {
+    printf("%c", element->u.b[i]);
+  }
+
+  return;
+}
+

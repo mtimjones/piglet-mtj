@@ -46,6 +46,7 @@ relation_t* allocateRelation( char* name )
     {
       relations[i] = malloc(sizeof(relation_t));
       strncpy(relations[i]->name, name, strlen(name));
+      relations[i]->row_list.next = relations[i]->row_list.prev = NULL;
       return relations[i];
     }
   }
