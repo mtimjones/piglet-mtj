@@ -34,7 +34,7 @@ relation_t* allocateRelation( char* name )
       len = max(len, strlen(relations[i]->name));
       if (!strncmp(name, relations[i]->name, len))
       {
-        return (relation_t*)0;
+        break;
       }
     }
   }
@@ -46,6 +46,7 @@ relation_t* allocateRelation( char* name )
     {
       relations[i] = malloc(sizeof(relation_t));
       strncpy(relations[i]->name, name, strlen(name));
+      return relations[i];
     }
   }
 

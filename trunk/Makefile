@@ -1,5 +1,5 @@
 
-piglet: main.c parser.c relations.c execute.c
+piglet: main.c parser.c relations.c execute.c tuples.c helpers.c
 	gcc -Wall -g -o $@ $^
 
 clean:
