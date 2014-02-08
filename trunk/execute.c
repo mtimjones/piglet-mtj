@@ -8,7 +8,7 @@
 
 int executeLoad( char* relation_name, char* filename, char delimiter )
 {
-  int ret;
+  int ret, i;
   relation_t* relation;
   char line[MAX_LINE+1];
   char item[MAX_ITEM+1];
@@ -31,10 +31,11 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
     relation = allocateRelation( relation_name );
     if (relation)
     {
-      addTupleToRelation( allocateTuple(), relation );
 
       while(fgets(line, 512, fp) != NULL)
       {
+        tuple_t* tuple = allocateTuple();
+        addTupleToRelation( tuple, relation );
 
         printf("line: %s", line);
 
@@ -44,7 +45,20 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
         while (token)
         {
 
+          element_t* element = allocateElement();
+
           trimwhitespace( item, MAX_ITEM, token );
+
+          element->size = strlen( item );
+          element->u.b = allocateByteArray( element->size );
+          element->type = BYTEARRAY;
+          
+          for (i = 0 ; i < element->size ; i++)
+          {
+            element->u.b[i] = item[i];
+          }
+
+          addElementToTuple( element, tuple );
 
           printf("token: %s\n", item);
 
@@ -64,5 +78,37 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
   }
 
   return ret;
+}
+
+
+int executeDump( char* relation_name )
+{
+  relation_t* relation;
+  tuple_t* tuple;
+
+  relation = findRelation( relation_name );
+
+  if (!relation) return -1;
+
+  // Iterate the row_list
+  if (relation->row_list.head)
+  {
+    struct link_s* walker;
+
+    walker = tuple = (tuple_t*)relation->row_list.head;
+    do
+    {
+
+      walker = walker->next;
+
+    } while (walker != tuple)
+
+  }
+  else
+  {
+    return -1;
+  }
+
+  return 0;
 }
 

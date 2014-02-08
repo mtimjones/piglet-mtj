@@ -31,6 +31,12 @@ int parseDump( char* line )
 
   printf(" relation %s\n", relation);
 
+  // Expecting 1 parsed argument.
+  if (ret == 1)
+  {
+    ret = executeDump( relation );
+  }
+
   return ret;
 }
 
