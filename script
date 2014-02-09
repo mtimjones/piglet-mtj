@@ -1,2 +1,2 @@
-mydata = LOAD census.txt DELIM ',';
-DUMP mydata;
+mydata = LOAD census.txt DELIM ','
+DUMP mydata

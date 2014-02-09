@@ -40,25 +40,25 @@ int trimwhitespace(char *out, int len, const char *str)
 }
 
 
-void listAdd( struct link_s* list, struct link_s* item )
+void listAdd( linked_list_t* list, link_t* item )
 {
   assert(list);
   assert(item);
 
   item->next = item->prev = NULL;
 
-  if (list->prev) 
+  if (list->last) 
   {
     // Non-empty list, item added to the tail
-    list->prev->next = item;
-    item->prev = list->prev;
-    list->prev = item;
+    list->last->next = item;
+    item->prev = list->last;
+    list->last = item;
   }
   else
   {
     // Empty list, single item added
-    list->next = item;
-    list->prev = item;
+    list->first = item;
+    list->last = item;
   }
 
   return;
@@ -76,11 +76,12 @@ void printByteArray( element_t* element )
 
   assert( element->type == BYTEARRAY);
 
-  for (i = 0 ; i < element->size)
+  for (i = 0 ; i < element->size ; i++)
   {
     printf("%c", element->u.b[i]);
   }
 
   return;
 }
+
 

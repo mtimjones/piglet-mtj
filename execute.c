@@ -37,7 +37,7 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
         tuple_t* tuple = allocateTuple();
         addTupleToRelation( tuple, relation );
 
-        printf("line: %s", line);
+//        printf("line: %s", line);
 
         // Start tokenizing input...
         token = strtok(line, delim);
@@ -60,7 +60,7 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
 
           addElementToTuple( element, tuple );
 
-          printf("token: %s\n", item);
+//          printf("token: %s\n", item);
 
           token = strtok(NULL, delim);
 
@@ -81,33 +81,31 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
 }
 
 
+void elem_iter( element_t* element )
+{
+//  print_element( element );
+    printByteArray( element );
+    printf("\t");
+}
+
+
+void row_iter( tuple_t* tuple )
+{
+  iterateElements( tuple, elem_iter );  
+  printf("\n");
+
+  return;
+}
+
 int executeDump( char* relation_name )
 {
   relation_t* relation;
-  tuple_t* tuple;
 
   relation = findRelation( relation_name );
 
   if (!relation) return -1;
 
-  // Iterate the row_list
-  if (relation->row_list.head)
-  {
-    struct link_s* walker;
-
-    walker = tuple = (tuple_t*)relation->row_list.head;
-    do
-    {
-
-      walker = walker->next;
-
-    } while (walker != tuple)
-
-  }
-  else
-  {
-    return -1;
-  }
+  iterateRows( relation, row_iter );
 
   return 0;
 }
