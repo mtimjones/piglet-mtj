@@ -13,17 +13,23 @@
 
 #define MAX_NAME	60
 
-// List structure
 
-struct link_s {
-  struct link_s* next; // first
-  struct link_s* prev; // last
-};
+// List structure (node and list)
+
+typedef struct link_s {
+  struct link_s* next;
+  struct link_s* prev;
+} link_t;
+
+typedef struct list_s {
+  link_t* first;
+  link_t* last;
+} linked_list_t;
 
 
 // Type of an element (basic type or tuple).
 typedef struct element_s {
-  struct link_s element_list;
+  link_t node;
   char name[MAX_NAME];
   unsigned int type;
   unsigned int size; // for bytearray
@@ -39,14 +45,15 @@ typedef struct element_s {
 
 // Type of a row of a relation.
 typedef struct tuple_s {
-  struct link_s row_list;
-  struct link_s element_list;
+  link_t node;
+  linked_list_t element_list;
+//  linked_list_t group_list; // list for a group.
 } tuple_t;
 
 
 // Type of a relation.
 typedef struct relation_s {
-  struct link_s row_list;
+  linked_list_t tuple_list;
   char name[MAX_NAME];
 } relation_t;
 
@@ -58,7 +65,7 @@ typedef struct relation_s {
 
 int trimwhitespace( char* out, int len, const char* str );
 
-void listAdd( struct link_s* list, struct link_s* item );
+void listAdd( linked_list_t* list, link_t* item );
 
 //
 // Miscellaneous Types and definitions
@@ -89,5 +96,11 @@ int parseDump( char* line );
 int executeLoad( char* relation_name, char* filename, char delimiter );
 int executeDump( char* relation_name );
 
+void printByteArray( element_t* element );
+
+typedef void (*row_iterator_t)( tuple_t* tuple );
+typedef void (*element_iterator_t)( element_t* element );
+
+void iterateList( struct link_s* list, void *);
 
 #endif // __PIGTYPES_H__

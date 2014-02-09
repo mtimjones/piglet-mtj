@@ -11,7 +11,7 @@ int parseLoad( char* line )
   char delim;
   int ret;
   
-  ret = sscanf(line, "%s = LOAD %s DELIM '%c';", relation, filename, &delim);
+  ret = sscanf(line, "%s = LOAD %s DELIM '%c'", relation, filename, &delim);
 
   // Expecting 3 parsed arguments.
   if (ret == 3)
@@ -27,9 +27,7 @@ int parseDump( char* line )
   char relation[MAX_RELATION_NAME];
   int  ret;
 
-  ret = sscanf(line, "DUMP %s;", relation);
-
-  printf(" relation %s\n", relation);
+  ret = sscanf(line, "DUMP %s", relation);
 
   // Expecting 1 parsed argument.
   if (ret == 1)
