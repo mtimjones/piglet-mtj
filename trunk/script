@@ -1,2 +1,2 @@
-mydata = LOAD census.txt DELIM ','
+mydata = LOAD banks.txt DELIM ','
 DUMP mydata

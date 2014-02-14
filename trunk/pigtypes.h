@@ -34,7 +34,7 @@ typedef struct element_s {
   unsigned int type;
   unsigned int size; // for bytearray
   union {
-    double d;
+    double g;
     long l;
     unsigned char* b; // bytearray
     char *s;
@@ -100,6 +100,9 @@ void printByteArray( element_t* element );
 
 typedef void (*row_iterator_t)( tuple_t* tuple );
 typedef void (*element_iterator_t)( element_t* element );
+
+void iterateRows( relation_t* list, row_iterator_t callback );
+void iterateElements( tuple_t* list, element_iterator_t callback );
 
 void iterateList( struct link_s* list, void *);
 
