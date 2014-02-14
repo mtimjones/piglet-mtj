@@ -85,14 +85,15 @@ void elem_iter( element_t* element )
 {
 //  print_element( element );
     printByteArray( element );
-    printf("\t");
+    if (element->node.next != NULL) printf(",");
 }
 
 
 void row_iter( tuple_t* tuple )
 {
+  printf("{");
   iterateElements( tuple, elem_iter );  
-  printf("\n");
+  printf("}\n");
 
   return;
 }
