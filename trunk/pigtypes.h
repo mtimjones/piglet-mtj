@@ -92,6 +92,7 @@ element_t* allocateElement( void );
 
 int parseLoad( char* line );
 int parseDump( char* line );
+int parseForeach( char* line );
 
 int executeLoad( char* relation_name, char* filename, char delimiter );
 int executeDump( char* relation_name );

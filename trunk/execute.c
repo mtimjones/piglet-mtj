@@ -111,3 +111,6 @@ int executeDump( char* relation_name )
   return 0;
 }
 
+
+//int executeForeach( char* line )
+//{

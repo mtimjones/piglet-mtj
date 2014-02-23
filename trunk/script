@@ -1,2 +1,4 @@
 mydata = LOAD banks.txt DELIM ','
 DUMP mydata
+newdata = LOAD banks.txt DELIM ','
+DUMP newdata

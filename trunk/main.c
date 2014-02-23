@@ -45,6 +45,12 @@ int execute_script( char* script )
     {
       ret = parseDump( line );
     }
+#if 0
+    else if (strstr(line, "FOREACH") != NULL)
+    {
+      ret = parseForeach( line );
+    }
+#endif
     else
     {
       printf("Cannot parse line %d\n", linenum);
