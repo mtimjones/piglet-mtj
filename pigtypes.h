@@ -11,6 +11,7 @@
 #define CHARARRAY  3
 #define BYTEARRAY  4
 #define TUPLE      5
+#define CONSTANT   6
 
 #define MAX_NAME	60
 

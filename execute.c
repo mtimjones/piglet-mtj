@@ -115,13 +115,42 @@ int executeDump( char* relation_name )
   return 0;
 }
 
+static relation_t* output_relation;
+static expr_t* exprs;
+
+void foreach_iter( tuple_t* tuple )
+{
+  /* The expressions list contains the elements that are required to be
+   * written to the output relation.  This process is then for each row,
+   * iterate the expressions, compute the result, and then output the 
+   * resulting object to the new row for the output relation.
+   */
+
+  int i;
+
+  // Allocate a tuple
+
+  for (i = 0 ; i < MAX_EXPR ; i++)
+  {
+    if (exprs[i].active)
+    {
+
+      // Execute the expression
+
+      // Afterwards, the element on the stack should be added to the
+      // current row.
+
+    } else break;
+  }
+
+  return;
+}
+
 
 int executeForeach( relation_t* input, relation_t* output, expr_t* expressions )
 {
+#if 0
   int i;
-
-  printf("Executing foreach/generate\n");
-
   for (i = 0 ; i < MAX_EXPR ; i++)
   {
     if (expressions[i].active)
@@ -133,6 +162,12 @@ int executeForeach( relation_t* input, relation_t* output, expr_t* expressions )
 
     }
   }
+#endif
+
+  output_relation = output;
+  exprs = expressions;
+
+  iterateRows( input, foreach_iter );
 
   return 0;
 }
