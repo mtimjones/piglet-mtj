@@ -38,22 +38,22 @@ int parseDump( char* line )
   return ret;
 }
 
-#if 0
-#define MAX_TOK		100
+
+#define MAX_TOK		50
 
 int parseForeach( char* line )
 {
   // Entire Foreach/Generate must be on one line...
   char token[MAX_TOK+1];
-  char delim[2] = {' ', 0};
   relation_t* output_relation;
   relation_t* input_relation;
+  expr_t expressions[MAX_EXPR];
+  int cur_expr = 0;
+  int ret;
 
-  // allocate an expression
-
-  // Simple parser using a tokenizer
+  // Brute-force parser using a tokenizer
   
-  initParser( line, " ," );
+  initParser( line, " " );
 
   // Parse the output relation
   if (parseToken( token, MAX_TOK ))
@@ -61,12 +61,14 @@ int parseForeach( char* line )
     // First element will be the relation to create
     output_relation = findRelation( token );
 
-    if (output_relation) return -1;
+    if (output_relation) 
+    {
       printf("Output relation from foreach/generate should not exist.\n");
       return -1;
     }
   } else return -1;
 
+  // Consume the '='
   if (!consumeToken( "=" ))
   {
     printf("Missing = in foreach/generate.\n");
@@ -84,7 +86,8 @@ int parseForeach( char* line )
     // First element will be the relation to create
     input_relation = findRelation( token );
 
-    if (!input_relation) return -1;
+    if (!input_relation) 
+    {
       printf("Input relation from foreach/generate not found.\n");
       return -1;
     }
@@ -97,9 +100,31 @@ int parseForeach( char* line )
   }
 
   // loop through and load each expression into a new slot.
-  
-  
+  resetDelimiter( "," );
 
+  memset( (void*)expressions, 0, sizeof(expressions) );
+
+  while (parseToken(token, MAX_TOK))
+  {
+    ret = parseExpression( token, 
+                           expressions[cur_expr].expr_str,
+                           &expressions[cur_expr].type,
+                           expressions[cur_expr].name );
+
+    printf("ret = %d, cur_expr = %d\n", ret, cur_expr);
+
+    expressions[cur_expr].active = ret;
+
+    if (!ret) break;
+    else cur_expr++;
+  }  
+
+  // Execute the expression list over the input relation
+  if (cur_expr > 0)
+  {
+    ret = executeForeach( input_relation, output_relation, expressions );
+  }
+  
+  return 0;
 }
 
-#endif

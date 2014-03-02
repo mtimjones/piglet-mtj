@@ -12,7 +12,7 @@ element_t* allocateElement( void )
 }
 
 
-void print_element( element_t* element )
+void printElement( element_t* element )
 {
   assert(element);
 

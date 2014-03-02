@@ -1,4 +1,3 @@
 mydata = LOAD banks.txt DELIM ','
-DUMP mydata
-newdata = LOAD banks.txt DELIM ','
+newdata = FOREACH mydata GENERATE [$1 $2 +]:LONG:data1, [$2]:LONG:data2, [$3]:CHARARRAY:state
 DUMP newdata
