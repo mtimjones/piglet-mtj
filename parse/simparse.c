@@ -82,15 +82,13 @@ int parseToken( char* output, int length )
 
 int consumeToken( char* token )
 {
-  int len = strlen(token);
-
   ignoreWhitespace();
 
   while (*token)
   {
     if (*current != *token) return 0;
-    *current++;
-    *token++;
+    current++;
+    token++;
   }
 
   ignoreWhitespace();
@@ -108,8 +106,6 @@ int endOfStream( void )
 
 int parseType( char* type )
 {
-  int ret;
-
   if      (!strcmp(type, "CHARARRAY")) return CHARARRAY;
   else if (!strcmp(type, "BYTEARRAY")) return BYTEARRAY;
   else if (!strcmp(type, "LONG")) return LONG;
@@ -119,7 +115,7 @@ int parseType( char* type )
 }
 
 
-void parseExpression( char* token, char *expr, int *type, char* name )
+int parseExpression( char* token, char *expr, int *type, char* name )
 {
   int i=0;
   char typestring[80];
@@ -135,8 +131,12 @@ void parseExpression( char* token, char *expr, int *type, char* name )
     if (*token++ == '[') break;
   }
 
+  if (*token == 0) return 0;
+
   // Skip whitespace
-  while (*token == ' ') token++;
+  while ((*token) && (*token == ' ')) token++;
+
+  if (*token == 0) return 0;
 
   // Accumulate all characters until ']'
   while (*token)
@@ -144,11 +144,13 @@ void parseExpression( char* token, char *expr, int *type, char* name )
     if (*token == ']') break;
     *expr++ = *token++;
   }
+  if (*token == 0) return 0;
   token++;
   *expr++ = 0;
 
   // Skip the ':' character
   while ((*token) && (*token != ':')) token++;
+  if (*token == 0) return 0;
   token++;
 
   // Accumulate the type
@@ -157,6 +159,7 @@ void parseExpression( char* token, char *expr, int *type, char* name )
     if (*token == ':') break;
     typestring[i++] = *token++;
   }
+  if (*token == 0) return 0;
   token++;
   typestring[i] = 0;
 
@@ -170,6 +173,6 @@ void parseExpression( char* token, char *expr, int *type, char* name )
   }
   *name++ = 0;
 
-  return;
+  return 1;
 }
 

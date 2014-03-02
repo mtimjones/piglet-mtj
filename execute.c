@@ -83,9 +83,8 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
 
 void elem_iter( element_t* element )
 {
-//  print_element( element );
-    printByteArray( element );
-    if (element->node.next != NULL) printf(",");
+  printElement( element );
+  if (element->node.next != NULL) printf(",");
 }
 
 
@@ -98,13 +97,18 @@ void row_iter( tuple_t* tuple )
   return;
 }
 
+
 int executeDump( char* relation_name )
 {
   relation_t* relation;
 
   relation = findRelation( relation_name );
 
-  if (!relation) return -1;
+  if (!relation) 
+  {
+    printf("Could not Dump relation, not found.\n");
+    return -1;
+  }
 
   iterateRows( relation, row_iter );
 
@@ -112,5 +116,24 @@ int executeDump( char* relation_name )
 }
 
 
-//int executeForeach( char* line )
-//{
+int executeForeach( relation_t* input, relation_t* output, expr_t* expressions )
+{
+  int i;
+
+  printf("Executing foreach/generate\n");
+
+  for (i = 0 ; i < MAX_EXPR ; i++)
+  {
+    if (expressions[i].active)
+    {
+      printf("Expression #%d\n", i);
+      printf("\tName: %s\n", expressions[i].name);
+      printf("\tType: %d\n", expressions[i].type);
+      printf("\tExpr: %s\n", expressions[i].expr_str);
+
+    }
+  }
+
+  return 0;
+}
+

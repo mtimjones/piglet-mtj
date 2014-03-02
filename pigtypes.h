@@ -4,6 +4,7 @@
 #define __PIGTYPES_H__
 
 #include <stdio.h>
+#include <string.h>
 
 #define LONG	   1
 #define DOUBLE	   2
@@ -58,6 +59,19 @@ typedef struct relation_s {
 } relation_t;
 
 
+#define MAX_EXPR_LINE   80
+#define MAX_EXPR_NAME   80
+#define MAX_EXPR	20
+
+typedef struct
+{
+  int  active;
+  char name[MAX_EXPR_NAME+1];
+  int  type;
+  char expr_str[MAX_EXPR_LINE+1];
+} expr_t;
+
+
 //
 // Helper functions
 //
@@ -94,9 +108,18 @@ int parseLoad( char* line );
 int parseDump( char* line );
 int parseForeach( char* line );
 
+// Parser/Tokenizer
+char* initParser( char* line, char* delim );
+void resetDelimiter( char* delim );
+int parseToken( char* output, int length );
+int consumeToken( char* token );
+int parseExpression( char* token, char* expr, int* type, char* name );
+
 int executeLoad( char* relation_name, char* filename, char delimiter );
 int executeDump( char* relation_name );
+int executeForeach( relation_t* input, relation_t* output, expr_t* expressions );
 
+void printElement( element_t* element );
 void printByteArray( element_t* element );
 
 typedef void (*row_iterator_t)( tuple_t* tuple );

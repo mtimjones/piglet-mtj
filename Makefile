@@ -1,6 +1,6 @@
 
-piglet: main.c parser.c relations.c execute.c tuples.c helpers.c elements.c
-	gcc -Wall -g -o $@ $^
+piglet: main.c parse/parser.c relations.c execute.c tuples.c helpers.c elements.c parse/simparse.c
+	gcc -Wall -g -I ./ -o $@ $^
 
 clean:
 	rm -f piglet
