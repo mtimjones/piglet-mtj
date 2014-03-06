@@ -59,7 +59,7 @@ int execute_script( char* script )
     linenum++;
   }
 
-  return 0;
+  return ret;
 }
 
 int main( int argc, char *argv[] )

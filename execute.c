@@ -128,20 +128,28 @@ void foreach_iter( tuple_t* tuple )
 
   int i;
 
-  // Allocate a tuple
-
   for (i = 0 ; i < MAX_EXPR ; i++)
   {
+
+    // Allocate a new tuple
+
     if (exprs[i].active)
     {
 
       // Execute the expression
+      interp_init( );
+      element_t* element = interpret_go( exprs[i].expr_str );
 
       // Afterwards, the element on the stack should be added to the
       // current row.
 
+      // Add the element to the row.
+
     } else break;
+
   }
+
+  // Add the new tuple to the output_relation
 
   return;
 }

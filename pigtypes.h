@@ -11,10 +11,12 @@
 #define CHARARRAY  3
 #define BYTEARRAY  4
 #define TUPLE      5
-#define CONSTANT   6
+#define BOOLEAN    6
 
 #define MAX_NAME	60
 
+#define TRUE       1
+#define FALSE      0
 
 // List structure (node and list)
 
@@ -122,6 +124,7 @@ int executeForeach( relation_t* input, relation_t* output, expr_t* expressions )
 
 void printElement( element_t* element );
 void printByteArray( element_t* element );
+element_t* copyElement( element_t* element );
 
 typedef void (*row_iterator_t)( tuple_t* tuple );
 typedef void (*element_iterator_t)( element_t* element );
@@ -130,5 +133,9 @@ void iterateRows( relation_t* list, row_iterator_t callback );
 void iterateElements( tuple_t* list, element_iterator_t callback );
 
 void iterateList( struct link_s* list, void *);
+
+// Interpreter Prototypes
+void interp_init( void );
+element_t* interpret_go( char* instr );
 
 #endif // __PIGTYPES_H__

@@ -111,7 +111,7 @@ int parseForeach( char* line )
                            &expressions[cur_expr].type,
                            expressions[cur_expr].name );
 
-    printf("ret = %d, cur_expr = %d\n", ret, cur_expr);
+//    printf("ret = %d, cur_expr = %d\n", ret, cur_expr);
 
     expressions[cur_expr].active = ret;
 

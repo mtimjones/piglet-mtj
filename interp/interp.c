@@ -5,11 +5,11 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <ctype.h>
-#include "interp.h"
+#include "pigtypes.h"
 
 #define MAX_STACK	40
 
-static int  stack[MAX_STACK];
+static element_t*  stack[MAX_STACK];
 static int  stack_index;
 
 
@@ -19,13 +19,25 @@ void interp_init( void )
   return;
 }
 
-static void push( int value )
+element_t* createLongConst( int value )
 {
-  stack[stack_index++] = value;
+  element_t* elem_ptr = malloc( sizeof(element_t) );
+
+  // TODO: Need to handle double values...
+  elem_ptr->type = LONG;
+  elem_ptr->u.l = value;
+
+  return elem_ptr;
+}
+
+static void push( element_t* elem_ptr )
+{
+  assert( elem_ptr );
+  stack[stack_index++] = elem_ptr;;
   return;
 }
 
-static int pop( void )
+static element_t* pop( void )
 {
   assert(stack_index != 0);
 
@@ -53,9 +65,263 @@ int isNumber(const char *str)
 }
 
 
-int interpret_go( char* instr )
+static void op_add( void )
+{
+  element_t *op1, *op2;
+
+  op1 = pop(); op2 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = op1->u.l + op2->u.l;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.g = op1->u.g + op2->u.g;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+
+static void op_sub( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop(); op1 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = op1->u.l - op2->u.l;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.g = op1->u.g - op2->u.g;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+
+static void op_mul( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop(); op1 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = op1->u.l * op2->u.l;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.g = op1->u.g * op2->u.g;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+
+static void op_div( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop(); op1 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = op1->u.l / op2->u.l;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.g = op1->u.g / op2->u.g;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+
+static void op_gt( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop(); op1 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = ( op1->u.l > op2->u.l );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.l = ( op1->u.g > op2->u.g );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+  
+static void op_gte( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop(); op1 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = ( op1->u.l >= op2->u.l );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.l = ( op1->u.g >= op2->u.g );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+  
+static void op_lt( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop(); op1 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = ( op1->u.l < op2->u.l );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.l = ( op1->u.g < op2->u.g );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+  
+static void op_lte( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop( ); op1 = pop( );
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = ( op1->u.l <= op2->u.l );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.l = ( op1->u.g <= op2->u.g );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+
+static void op_eq( void )
+{
+  element_t *op1, *op2;
+
+  op2 = pop(); op1 = pop();
+  assert( op1 ); assert( op2 );
+
+  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  {
+    op1->u.l = ( op1->u.l == op2->u.l );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  {
+    op1->u.l = ( op1->u.g == op2->u.g );
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
+  else if ( ( op1->type == BYTEARRAY ) && ( op2->type == BYTEARRAY ) )
+  {
+    int i;
+    int result = TRUE;
+
+    if ( op1->size != op2->size ) result = 0;
+    else
+    {
+      for ( i = 0 ; i < op1->size ; i++ )
+      {
+        if ( op1->u.b[i] != op2->u.b[i])
+        {
+          result = FALSE; break;
+        }
+      }
+    }
+
+    free( (void*)op2 );
+
+    op1->u.l = result;
+    op1->type = BOOLEAN;
+    push( op1 );
+  }
+  else if ( ( op1->type == CHARARRAY ) && ( op2->type == CHARARRAY ) )
+  {
+    int result = FALSE;
+
+    if (!strcmp( op1->u.s, op2->u.s )) result = TRUE;
+
+    free( op2 );
+
+    op1->u.l = result;
+    op1->type = LONG;
+    push( op1 );
+  }
+  else assert( 0 );
+
+  return;
+}
+
+
+element_t* interpret_go( char* instr )
 {
   char *token;
+
+  assert( instr );
 
   token = strtok( instr, " " );
 
@@ -65,28 +331,28 @@ int interpret_go( char* instr )
     // Push element value
     if (token[0] == '$')
     {
-      // temporary
-      // !!!! This will push the contents of the field
-      push( (int)token[1] );
-
-      // if chararray or bytearray, push pointer...
+      element_t* element;
+      // Push a copy of the element
+      element = copyElement( retrieveElement( token ) );
+      push( element );
     }
-    else if (isNumber(token))           push( atoi(token) );
-    else if (!strncmp(token, ">=", 2))  OP_GTE;
-    else if (!strncmp(token, "<=", 2))  OP_LTE;
-    else if (!strncmp(token, "==", 2))  OP_EQ;
-    else if (token[0] == '<')           OP_LT;
-    else if (token[0] == '>')           OP_GT;
-    else if (token[0] == '*')           OP_MUL;
-    else if (token[0] == '/')           OP_DIV;
-    else if (token[0] == '+')           OP_ADD;
-    else if (token[0] == '-')           OP_SUB;
+    else if (isNumber(token))           push( createLongConst( atoi(token) ) );
+    else if (!strncmp(token, ">=", 2))  op_gte();
+    else if (!strncmp(token, "<=", 2))  op_lte();
+    else if (!strncmp(token, "==", 2))  op_eq();
+    else if (token[0] == '<')           op_lt();
+    else if (token[0] == '>')           op_gt();
+    else if (token[0] == '*')           op_mul();
+    else if (token[0] == '/')           op_div();
+    else if (token[0] == '+')           op_add();
+    else if (token[0] == '-')           op_sub();
     else assert(0);
 
+    // Get next token
     token = strtok( NULL, " " );
-
   }
 
+  // Return top element
   return pop();
 }
 
