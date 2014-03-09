@@ -5,6 +5,19 @@
 #include <stdlib.h>
 #include <assert.h>
 
+static tuple_t* curTuple;
+
+tuple_t* getCurrentTuple( void )
+{
+  return curTuple;
+}
+
+void setCurrentTuple( tuple_t* tuple )
+{
+  curTuple = tuple;
+  return;
+}
+
 void addTupleToRelation( tuple_t* tuple, relation_t* relation )
 {
   assert(tuple);
@@ -66,4 +79,20 @@ void iterateElements( tuple_t* list, element_iterator_t callback )
   return;
 }
 
+
+void copyTuple( tuple_t* output, tuple_t* input )
+{
+  link_t* link;
+  element_t* element;
+
+  assert( output );
+  assert( input );
+
+  for (link = input->element_list.first ; link ; link = link->next) {
+    element = copyElement( (element_t*)link );
+    addElementToTuple( element, output );
+  }
+
+  return;
+}
 

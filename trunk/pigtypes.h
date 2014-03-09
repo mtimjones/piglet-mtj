@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #define LONG	   1
 #define DOUBLE	   2
@@ -12,6 +13,7 @@
 #define BYTEARRAY  4
 #define TUPLE      5
 #define BOOLEAN    6
+#define NUL        7
 
 #define MAX_NAME	60
 
@@ -61,6 +63,8 @@ typedef struct relation_s {
   char name[MAX_NAME];
 } relation_t;
 
+#define MAX_LONG_STRING		20
+#define MAX_DOUBLE_STRING	40
 
 #define MAX_EXPR_LINE   80
 #define MAX_EXPR_NAME   80
@@ -103,6 +107,11 @@ relation_t* findRelation( char* name );
 tuple_t* allocateTuple( void );
 void addTupleToRelation( tuple_t* tuple, relation_t* relation );
 void addElementToTuple( element_t* element, tuple_t* tuple );
+tuple_t* getCurrentTuple( void );
+void setCurrentTuple( tuple_t* tuple );
+void copyTuple( tuple_t* output, tuple_t* input );
+
+
 void* allocateByteArray( int size );
 
 element_t* allocateElement( void );
@@ -110,6 +119,8 @@ element_t* allocateElement( void );
 int parseLoad( char* line );
 int parseDump( char* line );
 int parseForeach( char* line );
+int parseDescribe( char* line );
+int parseFilter( char* line );
 
 // Parser/Tokenizer
 char* initParser( char* line, char* delim );
@@ -120,11 +131,16 @@ int parseExpression( char* token, char* expr, int* type, char* name );
 
 int executeLoad( char* relation_name, char* filename, char delimiter );
 int executeDump( char* relation_name );
+int executeDescribe( char* relation_name );
 int executeForeach( relation_t* input, relation_t* output, expr_t* expressions );
+int executeFilter( relation_t* input, relation_t* output, expr_t* expression );
 
 void printElement( element_t* element );
+void printType( int type );
 void printByteArray( element_t* element );
+element_t* retrieveElement( tuple_t* tuple, char* name );
 element_t* copyElement( element_t* element );
+void convertElement( element_t* element, int type );
 
 typedef void (*row_iterator_t)( tuple_t* tuple );
 typedef void (*element_iterator_t)( element_t* element );
@@ -135,7 +151,6 @@ void iterateElements( tuple_t* list, element_iterator_t callback );
 void iterateList( struct link_s* list, void *);
 
 // Interpreter Prototypes
-void interp_init( void );
 element_t* interpret_go( char* instr );
 
 #endif // __PIGTYPES_H__

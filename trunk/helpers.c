@@ -76,7 +76,7 @@ void printByteArray( element_t* element )
 
   assert( element );
 
-  if        ( element->type == BYTEARRAY )
+  if      ( element->type == BYTEARRAY )
   {
     for (i = 0 ; i < element->size ; i++)
     {
@@ -85,10 +85,12 @@ void printByteArray( element_t* element )
   }
   else if ( element->type == CHARARRAY )
   {
+    printf("\"");
     for (i = 0 ; i < element->size ; i++)
     {
       printf("%c", element->u.b[i]);
     }
+    printf("\"");
   }
   else assert(0);
 
