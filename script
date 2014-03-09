@@ -1,3 +1,21 @@
+#mydata = LOAD testdata.txt DELIM ','
+#DUMP mydata
+#newdata1 = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$2 $3 +]:LONG:data1, [$2]:LONG:data2
+#DUMP newdata1
+#newdata2 = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$2 $3 -]:LONG:data1, [$2]:LONG:data2
+#DUMP newdata2
+#newdata3 = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$2 $3 *]:LONG:data1, [$2]:LONG:data2
+#DUMP newdata3
+#newdata4 = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$2 $3 /]:DOUBLE:data1, [$2]:LONG:data2
+#DUMP newdata4
+#newdata5 = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$0 "tim" ==]:BOOLEAN:test
+#DUMP newdata5
+#DESCRIBE newdata5
+
 mydata = LOAD banks.txt DELIM ','
-newdata = FOREACH mydata GENERATE [$1 $2 +]:LONG:data1, [$2]:LONG:data2, [$3]:CHARARRAY:state
-DUMP newdata
+newdata = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$1]:CHARARRAY:city, [$2]:CHARARRAY:state
+newdata2 = FILTER newdata BY [$2 "CO" ==]:BOOLEAN:state
+#DUMP newdata
+#DESCRIBE newdata
+DUMP newdata2
+DESCRIBE newdata2

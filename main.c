@@ -37,7 +37,9 @@ int execute_script( char* script )
   while (fgets(line, 256, fp) != NULL)
   {
     // Simple parser for a very regular grammar
-    if      (strstr(line, "LOAD") != NULL)
+    if      (line[0] == '#') continue;
+    else if ( !strcmp( line, "\n" ) ) continue;
+    else if (strstr(line, "LOAD") != NULL)
     {
       ret = parseLoad( line );
     }
@@ -48,6 +50,14 @@ int execute_script( char* script )
     else if (strstr(line, "FOREACH") != NULL)
     {
       ret = parseForeach( line );
+    }
+    else if (strstr(line, "DESCRIBE") != NULL)
+    {
+      ret = parseDescribe( line );
+    }
+    else if (strstr(line, "FILTER") != NULL)
+    {
+      ret = parseFilter( line );
     }
     else
     {

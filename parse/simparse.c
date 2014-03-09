@@ -111,6 +111,7 @@ int parseType( char* type )
   else if (!strcmp(type, "LONG")) return LONG;
   else if (!strcmp(type, "DOUBLE")) return DOUBLE;
   else if (!strcmp(type, "TUPLE")) return TUPLE;
+  else if (!strcmp(type, "BOOLEAN")) return BOOLEAN;
   else assert(0);
 }
 
@@ -175,4 +176,5 @@ int parseExpression( char* token, char *expr, int *type, char* name )
 
   return 1;
 }
+
 

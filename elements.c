@@ -3,7 +3,6 @@
 #include "pigtypes.h"
 #include <string.h>
 #include <stdlib.h>
-#include <assert.h>
 
 
 element_t* allocateElement( void )
@@ -22,11 +21,11 @@ void printElement( element_t* element )
   switch( element->type )
   {
     case LONG:
-      printf("%ld\n", element->u.l);
+      printf("%ld", element->u.l);
       break;
 
     case DOUBLE:
-      printf("%g\n", element->u.g);
+      printf("%g", element->u.g);
       break;
 
     case BYTEARRAY:
@@ -34,8 +33,17 @@ void printElement( element_t* element )
       printByteArray( element );
       break;
 
+    case NUL:
+      printf("NUL");
+      break;
+
     case TUPLE:
       // emit a bag.
+      break;
+
+    case BOOLEAN:
+      if (element->u.l) printf("TRUE");
+      else printf("FALSE");
       break;
     
     default:
@@ -43,5 +51,31 @@ void printElement( element_t* element )
 
   }
 
+  return;
+}
+
+
+void printType( int type )
+{
+  switch( type )
+  {
+    case LONG:
+      printf("LONG");
+      break;
+    case DOUBLE:
+      printf("DOUBLE");
+      break;
+    case BYTEARRAY:
+      printf("BYTEARRAY");
+      break;
+    case CHARARRAY:
+      printf("CHARARRAY");
+      break;
+    case BOOLEAN:
+      printf("BOOLEAN");
+      break;
+    default:
+      assert(0);
+  }
   return;
 }

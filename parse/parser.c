@@ -39,6 +39,23 @@ int parseDump( char* line )
 }
 
 
+int parseDescribe( char* line )
+{
+  char relation[MAX_RELATION_NAME];
+  int  ret;
+
+  ret = sscanf(line, "DESCRIBE %s", relation);
+
+  // Expecting 1 parsed argument.
+  if (ret == 1)
+  {
+    ret = executeDescribe( relation );
+  }
+
+  return ret;
+}
+
+
 #define MAX_TOK		50
 
 int parseForeach( char* line )
@@ -65,6 +82,11 @@ int parseForeach( char* line )
     {
       printf("Output relation from foreach/generate should not exist.\n");
       return -1;
+    }
+    else
+    {
+      output_relation = allocateRelation( token );
+      assert( output_relation );
     }
   } else return -1;
 
@@ -123,6 +145,93 @@ int parseForeach( char* line )
   if (cur_expr > 0)
   {
     ret = executeForeach( input_relation, output_relation, expressions );
+  }
+  
+  return 0;
+}
+
+
+int parseFilter( char* line )
+{
+  // Entire Foreach/Generate must be on one line...
+  char token[MAX_TOK+1];
+  relation_t* output_relation;
+  relation_t* input_relation;
+  expr_t expression;
+  int ret;
+
+  // Brute-force parser using a tokenizer
+  
+  initParser( line, " " );
+
+  // Parse the output relation
+  if (parseToken( token, MAX_TOK ))
+  {
+    // First element will be the relation to create
+    output_relation = findRelation( token );
+
+    if (output_relation) 
+    {
+      printf("Output relation from filter should not exist.\n");
+      return -1;
+    }
+    else
+    {
+      output_relation = allocateRelation( token );
+      assert( output_relation );
+    }
+  } else return -1;
+
+  // Consume the '='
+  if (!consumeToken( "=" ))
+  {
+    printf("Missing = in filter.\n");
+    return -1;
+  }
+
+  if (!consumeToken( "FILTER" ))
+  {
+    printf("Missing FILTER in FILTER/BY.\n");
+    return -1;
+  }
+  
+  if (parseToken( token, MAX_TOK ))
+  {
+    // First element will be the relation to create
+    input_relation = findRelation( token );
+
+    if (!input_relation) 
+    {
+      printf("Input relation from FILTER/BY not found.\n");
+      return -1;
+    }
+  } else return -1;
+
+  if (!consumeToken( "BY" ))
+  {
+    printf("Missing BY in FILTER/BY.\n");
+    return -1;
+  }
+
+  memset( (void*)&expression, 0, sizeof(expression) );
+
+  resetDelimiter( "," );
+
+  if (parseToken(token, MAX_TOK))
+  {
+
+    ret = parseExpression( token, 
+                           expression.expr_str,
+                           &expression.type,
+                           expression.name );
+
+    assert( ret == 1 );
+
+    ret = executeFilter( input_relation, output_relation, &expression );
+  }
+  else
+  {
+    assert(0);
   }
   
   return 0;
