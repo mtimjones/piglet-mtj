@@ -20,7 +20,10 @@ newdata2 = FILTER newdata BY [$2 "CO" ==]:BOOLEAN:state
 DUMP newdata2
 #DESCRIBE newdata2
 
-newdata3 = SORT newdata2 BY city DESCEND
+#newdata3 = SORT newdata2 BY city DESCEND
+
+newdata3 = SORT newdata BY state DESCEND
+DUMP newdata3
 
 #nextdata = LOAD testdata.txt DELIM ','
 #nextdata2 = FILTER nextdata BY [$1 5 >]:LONG:test

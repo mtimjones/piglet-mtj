@@ -79,3 +79,34 @@ void printType( int type )
   }
   return;
 }
+
+
+int compareElements( element_t* elem1, element_t* elem2 )
+{
+  assert(elem1); assert(elem2);
+
+  // Both types should be the same...
+  assert( elem1->type == elem2->type );
+
+  if        ( elem1->type == CHARARRAY )
+  {
+    return ( strcmp( elem1->u.s, elem2->u.s ) < 0);
+  } else if ( elem1->type == BYTEARRAY )
+  {
+    return ( strcmp( elem1->u.s, elem2->u.s ) < 0);
+  } else if ( elem1->type == LONG )
+  {
+    return ( elem1->u.l < elem2->u.l );
+  } else if ( elem1->type == DOUBLE )
+  {
+    return ( elem1->u.g < elem2->u.g );
+  } else if ( elem1->type == BOOLEAN )
+  {
+    return ( elem1->u.l < elem2->u.l );
+  }
+
+  assert(0);
+
+  return 0;
+}
+

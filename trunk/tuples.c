@@ -102,12 +102,12 @@ void insertTupleSorted( tuple_t* tuple, relation_t* output,
 {
   link_t* link;
   element_t *element_to_add, *element_to_compare;
+  int added = 0;
 
   assert( tuple ); assert( output ); assert( field );
 
   // Get the field that we're comparing from the to add tuple
   element_to_add = retrieveElement( tuple, field );
-  printf("To add: "); printElement( element_to_add ); printf("\n");
 
   // If the relation is empty, just add this first tuple
   if (!output->tuple_list.last)
@@ -122,10 +122,31 @@ void insertTupleSorted( tuple_t* tuple, relation_t* output,
 
       element_to_compare = retrieveElement( (tuple_t*)link, field );
 
-      printf("To Compare element ");
-      printElement( element_to_compare );
-      printf("\n");
+      // Add before this item
+      if ( compareElements( element_to_add, element_to_compare ) )
+      {
+        ((link_t*)tuple)->prev = ((link_t*)tuple)->next = NULL;
+        if (link == output->tuple_list.first) {
+          // Add to the head of the list
+          ((link_t*)tuple)->next = link;
+          link->prev = (link_t*)tuple;
+          output->tuple_list.first = (link_t*)tuple;
+        } else {
+          // Add to the interior
+          ((link_t*)tuple)->next = link;
+          ((link_t*)tuple)->prev = link->prev;
+          link->prev->next = (link_t*)tuple;
+          link->prev = (link_t*)tuple;
+        }
+        added = 1;
+        break;
+      }
 
+    }
+
+    if (!added) 
+    {
+      listAdd( (linked_list_t*)output, (link_t*)tuple );
     }
   }
 
