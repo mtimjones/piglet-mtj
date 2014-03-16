@@ -96,3 +96,39 @@ void copyTuple( tuple_t* output, tuple_t* input )
   return;
 }
 
+
+void insertTupleSorted( tuple_t* tuple, relation_t* output, 
+                          char* field, int dir )
+{
+  link_t* link;
+  element_t *element_to_add, *element_to_compare;
+
+  assert( tuple ); assert( output ); assert( field );
+
+  // Get the field that we're comparing from the to add tuple
+  element_to_add = retrieveElement( tuple, field );
+  printf("To add: "); printElement( element_to_add ); printf("\n");
+
+  // If the relation is empty, just add this first tuple
+  if (!output->tuple_list.last)
+  {
+    listAdd( (linked_list_t*)output, (link_t*)tuple);
+  }
+  else
+  {
+    // Relation is not empty, insert the tuple at the right spot
+
+    for (link = output->tuple_list.first ; link ; link = link->next) {
+
+      element_to_compare = retrieveElement( (tuple_t*)link, field );
+
+      printf("To Compare element ");
+      printElement( element_to_compare );
+      printf("\n");
+
+    }
+  }
+
+  return;
+}
+

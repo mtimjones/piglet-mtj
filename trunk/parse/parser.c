@@ -133,8 +133,6 @@ int parseForeach( char* line )
                            &expressions[cur_expr].type,
                            expressions[cur_expr].name );
 
-//    printf("ret = %d, cur_expr = %d\n", ret, cur_expr);
-
     expressions[cur_expr].active = ret;
 
     if (!ret) break;
@@ -227,13 +225,96 @@ int parseFilter( char* line )
 
     assert( ret == 1 );
 
-    ret = executeFilter( input_relation, output_relation, &expression );
   }
   else
   {
     assert(0);
   }
   
-  return 0;
+  return executeFilter( input_relation, output_relation, &expression );
+}
+
+
+int parseSort( char* line )
+{
+  char token[MAX_TOK+1];
+  char field[MAX_TOK+1];
+  relation_t* output_relation;
+  relation_t* input_relation;
+  int dir = -1;
+
+  // Brute-force parser using a tokenizer
+  
+  initParser( line, " " );
+
+  // Parse the output relation
+  if (parseToken( token, MAX_TOK ))
+  {
+    // First element will be the relation to create
+    output_relation = findRelation( token );
+
+    if (output_relation) 
+    {
+      printf("Output relation from sort should not exist.\n");
+      return -1;
+    }
+    else
+    {
+      output_relation = allocateRelation( token );
+      assert( output_relation );
+    }
+  } else return -1;
+
+  // Consume the '='
+  if (!consumeToken( "=" ))
+  {
+    printf("Missing = in sort.\n");
+    return -1;
+  }
+
+  if (!consumeToken( "SORT" ))
+  {
+    printf("Missing SORT in SORT/BY.\n");
+    return -1;
+  }
+  
+  if (parseToken( token, MAX_TOK ))
+  {
+    // First element will be the relation to create
+    input_relation = findRelation( token );
+
+    if (!input_relation) 
+    {
+      printf("Input relation from SORT/BY not found.\n");
+      return -1;
+    }
+  } else return -1;
+
+  if (!consumeToken( "BY" ))
+  {
+    printf("Missing BY in SORT/BY.\n");
+    return -1;
+  }
+
+  // Parse the sort field
+  if (!parseToken( field, MAX_TOK ))
+  {
+    printf("Missing the sort field.\n");
+    return -1;
+  }
+
+  // Parse the direction
+  if (parseToken( token, MAX_TOK ))
+  {
+    if      (!strncmp( token, "DESCEND", 6 )) dir = DESCEND;
+    else if (!strncmp( token, "ASCEND", 5 )) dir = ASCEND;
+    else 
+    {
+      printf("Sort direction (ASCEND/DESCEND) not defined.\n");
+      return -1;
+    }
+  }
+
+  return executeSort( input_relation, output_relation, field, dir );
 }
 

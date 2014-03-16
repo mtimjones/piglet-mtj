@@ -35,7 +35,6 @@ void field_iter( element_t* element )
 
 element_t* retrieveElement( tuple_t* tuple, char* name )
 {
-  printf("retrieveElement name %s\n", name );
   assert( tuple );
   assert( name );
 
@@ -64,8 +63,6 @@ element_t* copyElement( element_t* source )
   strcpy( target->name, source->name );
   target->type = source->type;
   target->size = source->size;
-
-printf("source type is %d\n", source->type);
 
   switch( source->type )
   {

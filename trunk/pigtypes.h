@@ -110,7 +110,8 @@ void addElementToTuple( element_t* element, tuple_t* tuple );
 tuple_t* getCurrentTuple( void );
 void setCurrentTuple( tuple_t* tuple );
 void copyTuple( tuple_t* output, tuple_t* input );
-
+void insertTupleSorted( tuple_t* tuple, relation_t* relation, 
+                          char* field, int sort_dir );
 
 void* allocateByteArray( int size );
 
@@ -121,6 +122,10 @@ int parseDump( char* line );
 int parseForeach( char* line );
 int parseDescribe( char* line );
 int parseFilter( char* line );
+int parseSort( char* line );
+
+#define DESCEND    0
+#define ASCEND     1
 
 // Parser/Tokenizer
 char* initParser( char* line, char* delim );
@@ -132,8 +137,9 @@ int parseExpression( char* token, char* expr, int* type, char* name );
 int executeLoad( char* relation_name, char* filename, char delimiter );
 int executeDump( char* relation_name );
 int executeDescribe( char* relation_name );
-int executeForeach( relation_t* input, relation_t* output, expr_t* expressions );
-int executeFilter( relation_t* input, relation_t* output, expr_t* expression );
+int executeForeach( relation_t* inp, relation_t* out, expr_t* expressions );
+int executeFilter( relation_t* inp, relation_t* out, expr_t* expression );
+int executeSort( relation_t* inp, relation_t* out, char* field, int dir );
 
 void printElement( element_t* element );
 void printType( int type );
