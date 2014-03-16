@@ -59,6 +59,10 @@ int execute_script( char* script )
     {
       ret = parseFilter( line );
     }
+    else if (strstr(line, "SORT") != NULL)
+    {
+      ret = parseSort( line );
+    }
     else
     {
       printf("Cannot parse line %d\n", linenum);

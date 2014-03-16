@@ -243,8 +243,6 @@ static void filter_iter( tuple_t* tuple )
 
   assert( element->type == BOOLEAN );
 
-printf("element->u.l %ld\n", element->u.l);
-
   // If the result was TRUE, propagate the tuple.
   if ( element->u.l == TRUE )
   {
@@ -265,9 +263,7 @@ printf("element->u.l %ld\n", element->u.l);
 
 int executeFilter( relation_t* input, relation_t* output, expr_t* expression )
 {
-  assert(input);
-  assert(output);
-  assert(expression);
+  assert(input); assert(output); assert(expression);
 
 //  printf("\tName: %s\n", expression->name);
 //  printf("\tType: %d\n", expression->type);
@@ -277,6 +273,39 @@ int executeFilter( relation_t* input, relation_t* output, expr_t* expression )
   exprs = expression;
 
   iterateRows( input, filter_iter );
+
+  return 0;
+}
+
+
+static char* sort_field;
+static int sort_dir;
+
+static void sort_iter( tuple_t* tuple )
+{
+  tuple_t* output_tuple;
+
+  assert(tuple);
+
+  output_tuple = allocateTuple( );
+
+  copyTuple( output_tuple, tuple );
+
+  insertTupleSorted( output_tuple, output_relation, sort_field, sort_dir );
+
+  return;
+}
+
+
+int executeSort( relation_t* inp, relation_t* out, char* field, int dir )
+{
+  assert(inp); assert(out); assert(field);
+
+  output_relation = out;
+  sort_field = field;
+  sort_dir = dir;
+
+  iterateRows( inp, sort_iter );
 
   return 0;
 }
