@@ -46,6 +46,14 @@ element_t* retrieveElement( tuple_t* tuple, char* name )
 
   iterateElements( tuple, field_iter );
 
+  // No element was found, allocate a NUL and return.
+  if (!target_element)
+  {
+    target_element = allocateElement( );
+    target_element->type = NUL;
+    strcpy( target_element->name, name );
+  }
+
   return target_element;
 }
 
