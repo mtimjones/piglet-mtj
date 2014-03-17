@@ -19,7 +19,7 @@ void field_iter( element_t* element )
     assert( index < 20 );
     if (target_index == index) target_element = element;
   }
-  else /* Using named notation */
+  else
   {
     if (!strcmp(target_name, element->name))
     {
