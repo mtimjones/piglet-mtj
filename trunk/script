@@ -14,7 +14,7 @@
 
 mydata = LOAD banks.txt DELIM ','
 newdata = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$1]:CHARARRAY:city, [$2]:CHARARRAY:state
-newdata2 = FILTER newdata BY [$2 "CO" ==]:BOOLEAN:state
+#newdata2 = FILTER newdata BY [$2 "CO" ==]:BOOLEAN:state
 #DUMP newdata
 #DESCRIBE newdata
 DUMP newdata2
@@ -22,7 +22,7 @@ DUMP newdata2
 
 #newdata3 = SORT newdata2 BY city DESCEND
 
-newdata3 = SORT newdata BY state DESCEND
+newdata3 = SORT mydata BY $2 DESCEND
 DUMP newdata3
 
 #nextdata = LOAD testdata.txt DELIM ','
