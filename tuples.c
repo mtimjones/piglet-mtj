@@ -109,8 +109,6 @@ void insertTupleSorted( tuple_t* tuple, relation_t* output,
   // Get the field that we're comparing from the to add tuple
   element_to_add = retrieveElement( tuple, field );
 
-  if (!element_to_add) return;
-
   // If the relation is empty, just add this first tuple
   if (!output->tuple_list.last)
   {
