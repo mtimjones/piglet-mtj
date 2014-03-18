@@ -311,4 +311,17 @@ int executeSort( relation_t* inp, relation_t* out, char* field, int dir )
 }
 
 
+static char* group_field;
+
+int executeGroup( relation_t* inp, relation_t* out, char* field )
+{
+  assert(inp); assert(out); assert(field);
+
+  output_relation = out;
+  group_field = field;
+
+//  iterateRows( inp, group_iter );
+
+  return 0;
+}
 

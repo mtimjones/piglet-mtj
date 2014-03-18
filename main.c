@@ -37,31 +37,35 @@ int execute_script( char* script )
   while (fgets(line, 256, fp) != NULL)
   {
     // Simple parser for a very regular grammar
-    if      (line[0] == '#') continue;
+    if      (line[0] == '#') ;
     else if ( !strcmp( line, "\n" ) ) continue;
-    else if (strstr(line, "LOAD") != NULL)
+    else if ( strstr(line, "LOAD") != NULL)
     {
       ret = parseLoad( line );
     }
-    else if (strstr(line, "DUMP") != NULL)
+    else if ( strstr( line, "DUMP" ) != NULL )
     {
       ret = parseDump( line );
     }
-    else if (strstr(line, "FOREACH") != NULL)
+    else if ( strstr( line, "FOREACH" ) != NULL )
     {
       ret = parseForeach( line );
     }
-    else if (strstr(line, "DESCRIBE") != NULL)
+    else if ( strstr( line, "DESCRIBE" ) != NULL )
     {
       ret = parseDescribe( line );
     }
-    else if (strstr(line, "FILTER") != NULL)
+    else if ( strstr( line, "FILTER" ) != NULL )
     {
       ret = parseFilter( line );
     }
-    else if (strstr(line, "SORT") != NULL)
+    else if ( strstr( line, "SORT" ) != NULL )
     {
       ret = parseSort( line );
+    }
+    else if ( strstr( line, "GROUP" ) != NULL )
+    {
+      ret = parseGroup( line );
     }
     else
     {

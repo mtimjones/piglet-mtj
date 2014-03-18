@@ -13,24 +13,26 @@
 #DESCRIBE newdata5
 
 mydata = LOAD banks.txt DELIM ','
-#newdata = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$1]:CHARARRAY:city, [$2]:CHARARRAY:state
+newdata = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$1]:CHARARRAY:city, [$2]:CHARARRAY:state
 #newdata2 = FILTER newdata BY [state "CO" ==]:BOOLEAN:test
 #DUMP newdata
 #DESCRIBE newdata
 #DUMP newdata2
 #DESCRIBE newdata2
 
-#newdata3 = SORT newdata2 BY city DESCEND
+newdata2 = GROUP mydata BY state
+
+#newdata3 = SORT newdata2 BY city ASCEND
 
 #DUMP mydata
-#newdata3 = SORT newdata BY state DESCEND
+#newdata3 = SORT newdata BY state ASCEND
 #DUMP newdata3
 
-newdata = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$1]:CHARARRAY:city, [$2]:CHARARRAY:state, [$3]:LONG:zip
-DESCRIBE newdata
-newdata2 = FILTER newdata BY [zip 9999 >]:BOOLEAN:test
-newdata3 = SORT newdata2 BY zip DESCEND
-DUMP newdata3
+#newdata = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$1]:CHARARRAY:city, [$2]:CHARARRAY:state, [$3]:LONG:zip
+#DESCRIBE newdata
+#newdata2 = FILTER newdata BY [zip 9999 >]:BOOLEAN:test
+#newdata3 = SORT newdata2 BY zip ASCEND
+#DUMP newdata3
 
 #nextdata = LOAD testdata.txt DELIM ','
 #nextdata2 = FILTER nextdata BY [$1 5 >]:LONG:test
