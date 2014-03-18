@@ -314,6 +314,12 @@ static void op_gt( void )
     op1->type = BOOLEAN;
     free( (void*)op2 ); push( op1 );
   }
+  else if ( (  op1->type == NUL) || ( op2->type == NUL ) )
+  {
+    op1->u.l = 0;
+    op1->type = BOOLEAN;
+    free( (void*)op2 ); push( op1 );
+  }
   else assert( 0 );
 
   return;
@@ -468,8 +474,8 @@ element_t* interpret_go( char* instr )
 
   while (token)
   {
-    // Push element value
-    if (token[0] == '$')
+    // Push element object
+    if ( ( token[0] == '$' ) || ( isalpha( token[0] ) ) )
     {
       element_t* element;
       // Push a copy of the element
@@ -492,6 +498,7 @@ element_t* interpret_go( char* instr )
 //    else if (!strncmp(token, "||", 2)  op_or();
     else 
     {
+printf("Token: %s\n", token);
       assert(0);
     }
 
