@@ -1,60 +1,127 @@
-// Postfix expression parser
+// Elements Functions
 
-#include <stdlib.h>
 #include "pigtypes.h"
+#include <string.h>
+#include <stdlib.h>
 
-element_t* target_element;
-char* target_name;
-int   target_index;
 
-void field_iter( element_t* element )
+element_t* allocateElement( void )
 {
-  int index = -1;
+  return calloc(1, sizeof(element_t));
+}
 
-  /* If we're using postional notation, get the index. */
-  if (target_name[0] == '$')
-  {
-    sscanf( &target_name[1], "%d", &index );
-    assert( index >= 0 );
-    assert( index < 20 );
-    if (target_index == index) target_element = element;
-  }
-  else
-  {
-    if (!strcmp(target_name, element->name))
-    {
-      target_element = element;
-    }
-  }
 
-  target_index++;
+// Move copyElement here...
+
+
+void printElement( element_t* element )
+{
+  assert(element);
+
+  switch( element->type )
+  {
+    case LONG:
+      printf("%ld", element->u.l);
+      break;
+
+    case DOUBLE:
+      printf("%g", element->u.g);
+      break;
+
+    case BYTEARRAY:
+    case CHARARRAY:
+      printByteArray( element );
+      break;
+
+    case NUL:
+      printf("NUL");
+      break;
+
+    case TUPLE:
+      // emit a bag.
+      break;
+
+    case BOOLEAN:
+      if (element->u.l) printf("TRUE");
+      else printf("FALSE");
+      break;
+    
+    default:
+      assert(0);
+
+  }
 
   return;
 }
 
 
-element_t* retrieveElement( tuple_t* tuple, char* name )
+void printType( int type )
 {
-  assert( tuple );
-  assert( name );
-
-  /* Initialize the return element pointer. */
-  target_element = (element_t*)0;
-
-  target_name = name;
-  target_index = 0;
-
-  iterateElements( tuple, field_iter );
-
-  // No element was found, allocate a NUL and return.
-  if (!target_element)
+  switch( type )
   {
-    target_element = allocateElement( );
-    target_element->type = NUL;
-    strcpy( target_element->name, name );
+    case LONG:
+      printf("LONG");
+      break;
+    case DOUBLE:
+      printf("DOUBLE");
+      break;
+    case BYTEARRAY:
+      printf("BYTEARRAY");
+      break;
+    case CHARARRAY:
+      printf("CHARARRAY");
+      break;
+    case BOOLEAN:
+      printf("BOOLEAN");
+      break;
+    default:
+      assert(0);
+  }
+  return;
+}
+
+
+int compareElements( element_t* elem1, element_t* elem2 )
+{
+  assert(elem1); assert(elem2);
+
+  if ( ((elem1->type == NUL) && (elem2->type != NUL)) ||
+       ((elem2->type == NUL) && (elem1->type != NUL)) )
+  {
+    return 0;
   }
 
-  return target_element;
+  // Both types should be the same...
+  assert( elem1->type == elem2->type );
+
+  if        ( elem1->type == CHARARRAY )
+  {
+    return ( strcmp( elem1->u.s, elem2->u.s ) < 0);
+  }
+  else if ( elem1->type == BYTEARRAY )
+  {
+    return ( strcmp( elem1->u.s, elem2->u.s ) < 0);
+  }
+  else if ( elem1->type == LONG )
+  {
+    return ( elem1->u.l < elem2->u.l );
+  }
+  else if ( elem1->type == DOUBLE )
+  {
+    return ( elem1->u.g < elem2->u.g );
+  }
+  else if ( elem1->type == BOOLEAN )
+  {
+    return ( elem1->u.l < elem2->u.l );
+  }
+  else if ( elem1->type == NUL )
+  {
+    return 0;
+  }
+
+  assert(0);
+
+  return 0;
 }
 
 
@@ -105,6 +172,7 @@ element_t* copyElement( element_t* source )
     case BOOLEAN:
       target->u.l = source->u.l;
       break;
+
     case TUPLE:
       assert(0);
     case NUL:
@@ -212,4 +280,5 @@ void convertElement( element_t* element, int type )
 
   return;
 }
+
 
