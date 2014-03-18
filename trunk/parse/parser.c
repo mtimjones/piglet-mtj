@@ -318,3 +318,74 @@ int parseSort( char* line )
   return executeSort( input_relation, output_relation, field, dir );
 }
 
+
+int parseGroup( char* line )
+{
+  char token[MAX_TOK+1];
+  char field[MAX_TOK+1];
+  relation_t* output_relation;
+  relation_t* input_relation;
+
+  // Brute-force parser using a tokenizer
+  
+  initParser( line, " " );
+
+  // Parse the output relation
+  if (parseToken( token, MAX_TOK ))
+  {
+    // First element will be the relation to create
+    output_relation = findRelation( token );
+
+    if (output_relation) 
+    {
+      printf("Output relation from group should not exist.\n");
+      return -1;
+    }
+    else
+    {
+      output_relation = allocateRelation( token );
+      assert( output_relation );
+    }
+  } else return -1;
+
+  // Consume the '='
+  if (!consumeToken( "=" ))
+  {
+    printf("Missing = in group.\n");
+    return -1;
+  }
+
+  if (!consumeToken( "GROUP" ))
+  {
+    printf("Missing GROUP in GROUP/BY.\n");
+    return -1;
+  }
+  
+  if (parseToken( token, MAX_TOK ))
+  {
+    // First element will be the relation to create
+    input_relation = findRelation( token );
+
+    if (!input_relation) 
+    {
+      printf("Input relation from GROUP/BY not found.\n");
+      return -1;
+    }
+  } else return -1;
+
+  if (!consumeToken( "BY" ))
+  {
+    printf("Missing BY in GROUP/BY.\n");
+    return -1;
+  }
+
+  // Parse the group field
+  if (!parseToken( field, MAX_TOK ))
+  {
+    printf("Missing the group field.\n");
+    return -1;
+  }
+
+  return executeGroup( input_relation, output_relation, field );
+}
+

@@ -123,6 +123,7 @@ int parseForeach( char* line );
 int parseDescribe( char* line );
 int parseFilter( char* line );
 int parseSort( char* line );
+int parseGroup( char* line );
 
 #define DESCEND    0
 #define ASCEND     1
@@ -140,6 +141,7 @@ int executeDescribe( char* relation_name );
 int executeForeach( relation_t* inp, relation_t* out, expr_t* expressions );
 int executeFilter( relation_t* inp, relation_t* out, expr_t* expression );
 int executeSort( relation_t* inp, relation_t* out, char* field, int dir );
+int executeGroup( relation_t* inp, relation_t* out, char* field );
 
 void printElement( element_t* element );
 void printType( int type );
