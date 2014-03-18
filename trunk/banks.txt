@@ -1,4 +1,5 @@
 Bank Name,City,State,CERT #,Acquiring Institution,Closing Date,Updated Date
+,,,,,,
 Community Bank of the Ozarks,Sunrise Beach,MO,27331,Bank of Sullivan,14-Dec-12,19-Dec-12
 Hometown Community Bank,Braselton,GA,57928,"CertusBank, National Association",16-Nov-12,29-Nov-12
 Citizens First National Bank,Princeton,IL,3731,Heartland Bank and Trust Company,2-Nov-12,7-Nov-12
