@@ -2,6 +2,7 @@
 
 #include "pigtypes.h"
 #include <string.h>
+#include <stdlib.h>
 
 #define MAX_LINE	512
 #define MAX_ITEM	80
@@ -146,6 +147,7 @@ void foreach_iter( tuple_t* tuple )
     {
 
       // Execute the expression
+      interpret_init( );
       element_t* element = interpret_go( exprs[i].expr_str );
 
       convertElement( element, exprs[i].type );
@@ -239,6 +241,7 @@ static void filter_iter( tuple_t* tuple )
   setCurrentTuple( tuple );
 
   // Execute the expression
+  interpret_init( );
   element_t* element = interpret_go( exprs->expr_str );
 
   assert( element->type == BOOLEAN );
@@ -313,6 +316,88 @@ int executeSort( relation_t* inp, relation_t* out, char* field, int dir )
 
 static char* group_field;
 
+static void group_iter( tuple_t* tuple )
+{
+  static relation_t* cur_output_relation;
+  static element_t* last_element;
+  element_t *cur_element;
+  static int first = 1;
+
+  assert(tuple);
+
+  cur_element = copyElement( retrieveElement( tuple, group_field ) );
+
+  // Internally, the group is represented as follows:
+  //
+  //  relation->group_tuple( group_name, internal_relation )
+  //
+  //  internal_relation->( tuple, tuple, ... )
+  //
+
+  // 
+
+  if (!first)
+  {
+    char instr[10];
+    element_t* ret_element;
+
+    // Create the postfix instructions to execute.
+    strcpy(instr, "==");
+
+    interpret_init( );
+
+    // Compare the two elements.
+    ext_push( copyElement( cur_element ) );
+    ext_push( copyElement( last_element ) );
+
+    ret_element = interpret_go( instr );
+
+    assert( ret_element->type == BOOLEAN );
+
+    // If they're different, it's a new group.
+    if (ret_element->u.l == 0) first = 1;
+
+    freeElement( ret_element );
+  }
+  else
+  {
+    last_element = copyElement( cur_element );
+  }
+
+  // If we're working on a new group, allocate a new root tuple
+  if (first)
+  {
+    element_t *group_element, *internal_tuple;
+    tuple_t* group_tuple;
+
+    group_tuple = allocateTuple( );
+
+    // Grab the group element and copy in into the current tuple.
+    group_element = copyElement( retrieveElement( tuple, group_field ) );
+    addElementToTuple( group_element, group_tuple );
+
+    // Create a internal tuple for the list.
+    internal_tuple = allocateElement( );
+    internal_tuple->type = RELATION;
+
+    // Create an anonymous relation (list of tuples)
+    internal_tuple->u.r = calloc( 1, sizeof( relation_t) );
+    strcpy( internal_tuple->name, "group");
+    cur_output_relation = internal_tuple->u.r;
+
+    first = 0;
+  }
+
+  // Add the current tuple to the list
+  {
+    tuple_t* temp_tuple = allocateTuple( );
+    copyTuple( temp_tuple, tuple );
+    addTupleToRelation( temp_tuple, cur_output_relation );
+  }
+
+  return;
+}
+
 int executeGroup( relation_t* inp, relation_t* out, char* field )
 {
   assert(inp); assert(out); assert(field);
@@ -320,7 +405,7 @@ int executeGroup( relation_t* inp, relation_t* out, char* field )
   output_relation = out;
   group_field = field;
 
-//  iterateRows( inp, group_iter );
+  iterateRows( inp, group_iter );
 
   return 0;
 }

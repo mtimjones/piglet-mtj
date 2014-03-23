@@ -20,6 +20,12 @@ static void push( element_t* elem_ptr )
   return;
 }
 
+void ext_push( element_t* elem_ptr )
+{
+  push( elem_ptr );
+  return;
+}
+
 static element_t* pop( void )
 {
   assert(stack_index != 0);
@@ -202,13 +208,13 @@ static void op_add( void )
   {
     op1->u.l = op1->u.l + op2->u.l;
     op1->type = LONG;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.g = op1->u.g + op2->u.g;
     op1->type = DOUBLE;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -228,13 +234,13 @@ static void op_sub( void )
   {
     op1->u.l = op1->u.l - op2->u.l;
     op1->type = LONG;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.g = op1->u.g - op2->u.g;
     op1->type = DOUBLE;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -254,13 +260,13 @@ static void op_mul( void )
   {
     op1->u.l = op1->u.l * op2->u.l;
     op1->type = LONG;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.g = op1->u.g * op2->u.g;
     op1->type = DOUBLE;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -280,13 +286,13 @@ static void op_div( void )
   {
     op1->u.l = op1->u.l / op2->u.l;
     op1->type = LONG;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.g = op1->u.g / op2->u.g;
     op1->type = DOUBLE;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -306,19 +312,19 @@ static void op_gt( void )
   {
     op1->u.l = ( op1->u.l > op2->u.l );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.l = ( op1->u.g > op2->u.g );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if ( (  op1->type == NUL) || ( op2->type == NUL ) )
   {
     op1->u.l = 0;
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -338,13 +344,13 @@ static void op_gte( void )
   {
     op1->u.l = ( op1->u.l >= op2->u.l );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.l = ( op1->u.g >= op2->u.g );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -364,13 +370,13 @@ static void op_lt( void )
   {
     op1->u.l = ( op1->u.l < op2->u.l );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.l = ( op1->u.g < op2->u.g );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -390,13 +396,13 @@ static void op_lte( void )
   {
     op1->u.l = ( op1->u.l <= op2->u.l );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.l = ( op1->u.g <= op2->u.g );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else assert( 0 );
 
@@ -414,13 +420,13 @@ static void op_eq( void )
   {
     op1->u.l = ( op1->u.l == op2->u.l );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.l = ( op1->u.g == op2->u.g );
     op1->type = BOOLEAN;
-    free( (void*)op2 ); push( op1 );
+    freeElement( op2 ); push( op1 );
   }
   else if ( ( ( op1->type == BYTEARRAY ) || ( op1->type == CHARARRAY ) ) &&
             ( ( op2->type == CHARARRAY ) || ( op2->type == BYTEARRAY ) ) )
@@ -458,6 +464,13 @@ static void op_eq( void )
 }
 
 
+void interpret_init( void )
+{
+  stack_index = 0;
+  return;
+}
+
+
 element_t* interpret_go( char* instr )
 {
   char *local;
@@ -467,8 +480,6 @@ element_t* interpret_go( char* instr )
 
   local = malloc( strlen( instr ) );
   strcpy( local, instr );
-
-  stack_index = 0;
 
   token = strtok( local, " " );
 
@@ -498,7 +509,6 @@ element_t* interpret_go( char* instr )
 //    else if (!strncmp(token, "||", 2)  op_or();
     else 
     {
-printf("Token: %s\n", token);
       assert(0);
     }
 

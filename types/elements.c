@@ -11,6 +11,13 @@ element_t* allocateElement( void )
 }
 
 
+void freeElement( element_t *element )
+{
+  free( element );
+  return;
+}
+
+
 // Move copyElement here...
 
 

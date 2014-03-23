@@ -14,6 +14,7 @@
 #define TUPLE      5
 #define BOOLEAN    6
 #define NUL        7
+#define RELATION   8
 
 #define MAX_NAME	60
 
@@ -44,7 +45,7 @@ typedef struct element_s {
     long l;
     unsigned char* b; // bytearray
     char *s;
-    struct tuple_s *t; // tuple
+    struct relation_s *r;
   } u;
 } element_t;
 
@@ -53,7 +54,6 @@ typedef struct element_s {
 typedef struct tuple_s {
   link_t node;
   linked_list_t element_list;
-//  linked_list_t group_list; // list for a group.
 } tuple_t;
 
 
@@ -116,6 +116,7 @@ void insertTupleSorted( tuple_t* tuple, relation_t* relation,
 void* allocateByteArray( int size );
 
 element_t* allocateElement( void );
+void freeElement( element_t *element );
 
 int parseLoad( char* line );
 int parseDump( char* line );
@@ -161,5 +162,8 @@ void iterateList( struct link_s* list, void *);
 
 // Interpreter Prototypes
 element_t* interpret_go( char* instr );
+void interpret_init( void );
+void ext_push( element_t* elem_ptr );
+
 
 #endif // __PIGTYPES_H__
