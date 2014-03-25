@@ -210,10 +210,12 @@ element_t* copyElement( element_t* source )
     case BOOLEAN:
       target->u.l = source->u.l;
       break;
-
     case TUPLE:
       assert(0);
     case NUL:
+      break;
+    case RELATION:
+      target->u.r = source->u.r;
       break;
     default:
       assert(0);

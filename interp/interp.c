@@ -501,6 +501,38 @@ static void op_strlen( void )
 }
 
 
+static void op_count( void )
+{
+  element_t *op1;
+  relation_t *relation;
+  link_t* link;
+  int count = 0;
+
+  op1 = pop();
+  assert(op1);
+
+  relation = (relation_t*)op1->u.r;
+
+  assert( op1->type == RELATION );
+
+  for (link = relation->tuple_list.first ; link ; link = link->next)
+  {
+    count++;
+  }
+
+  free(op1);
+
+  op1 = allocateElement( );
+  assert(op1);
+  op1->type = LONG;
+  op1->u.l = count;
+
+  push( op1 );
+
+  return;
+}
+
+
 void interpret_init( void )
 {
   stack_index = 0;
@@ -535,6 +567,7 @@ element_t* interpret_go( char* instr )
     else if (token[0] == '+')           op_add();
     else if (token[0] == '-')           op_sub();
     else if (!strncmp(token, "STRLEN", 6)) op_strlen();
+    else if (!strncmp(token, "COUNT", 5)) op_count();
 //    else if (!strncmp(token, "&&", 2)  op_and();
 //    else if (!strncmp(token, "||", 2)  op_or();
     else if ( ( token[0] == '$' ) || ( isalpha( token[0] ) ) )
