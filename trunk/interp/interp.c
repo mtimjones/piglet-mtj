@@ -470,6 +470,37 @@ static void op_eq( void )
 }
 
 
+static void op_strlen( void )
+{
+  element_t *op1;
+
+  op1 = pop();
+  assert( op1 );
+
+  if ( ( op1->type == CHARARRAY ) || ( op1->type == BYTEARRAY ) )
+  {
+    int len;
+    len = strlen( op1->u.s );
+
+    free( op1->u.s );
+    op1->type = LONG;
+    op1->u.l = (long)len;
+    push( op1 );
+
+  }
+  else
+  {
+    // Load a -1 -- error?!?
+    free( op1->u.s );
+    op1->type = LONG;
+    op1->u.l = -1;
+    push( op1 );
+  }
+
+  return;
+}
+
+
 void interpret_init( void )
 {
   stack_index = 0;
@@ -491,15 +522,7 @@ element_t* interpret_go( char* instr )
 
   while (token)
   {
-    // Push element object
-    if ( ( token[0] == '$' ) || ( isalpha( token[0] ) ) )
-    {
-      element_t* element;
-      // Push a copy of the element
-      element = copyElement( retrieveElement( getCurrentTuple(), token ) );
-      push( element );
-    }
-    else if (token[0] == '\"') push( convertStringToElement( token ) );
+    if      (token[0] == '\"') push( convertStringToElement( token ) );
     else if (isDouble(token)) push( convertStringToDoubleElement( token ) );
     else if (isNumber(token)) push( convertStringToLongElement( token ) );
     else if (!strncmp(token, ">=", 2))  op_gte();
@@ -511,8 +534,17 @@ element_t* interpret_go( char* instr )
     else if (token[0] == '/')           op_div();
     else if (token[0] == '+')           op_add();
     else if (token[0] == '-')           op_sub();
+    else if (!strncmp(token, "STRLEN", 6)) op_strlen();
 //    else if (!strncmp(token, "&&", 2)  op_and();
 //    else if (!strncmp(token, "||", 2)  op_or();
+    else if ( ( token[0] == '$' ) || ( isalpha( token[0] ) ) )
+    {
+      element_t* element;
+      // Push a copy of the element
+      element = copyElement( retrieveElement( getCurrentTuple(), token ) );
+      push( element );
+    }
+
     else 
     {
       assert(0);

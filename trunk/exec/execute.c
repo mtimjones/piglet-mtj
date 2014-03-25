@@ -324,7 +324,6 @@ static void group_iter( tuple_t* tuple )
   assert(tuple);
 
   cur_element = copyElement( retrieveElement( tuple, group_field ) );
-  printf("Current Element is "); printElement(cur_element); printf("\n");
 
   // Internally, the group is represented as follows:
   //
