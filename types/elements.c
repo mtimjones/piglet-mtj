@@ -18,8 +18,28 @@ void freeElement( element_t *element )
 }
 
 
-// Move copyElement here...
+static void printInnerRelation( relation_t* relation )
+{
+  link_t* olink;
 
+  extern void elem_iter( element_t* element );
+
+  assert(relation);
+
+  printf("\n    {\n");
+  for ( olink = relation->tuple_list.first ; olink ; olink = olink->next )
+  {
+
+    printf("      {");
+    iterateElements( (tuple_t*)olink, elem_iter );
+    if (olink->next) printf("},\n");
+    else printf("}\n");
+
+  }
+  printf("    }\n");
+
+  return;
+}
 
 void printElement( element_t* element )
 {
@@ -46,11 +66,16 @@ void printElement( element_t* element )
 
     case TUPLE:
       // emit a bag.
+      printf("Tuple");
       break;
 
     case BOOLEAN:
       if (element->u.l) printf("TRUE");
       else printf("FALSE");
+      break;
+
+    case RELATION:
+      printInnerRelation( element->u.r );
       break;
     
     default:
@@ -80,6 +105,12 @@ void printType( int type )
       break;
     case BOOLEAN:
       printf("BOOLEAN");
+      break;
+    case TUPLE:
+      printf("TUPLE");
+      break;
+    case RELATION:
+      printf("RELATION");
       break;
     default:
       assert(0);

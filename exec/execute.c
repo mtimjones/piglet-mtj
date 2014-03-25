@@ -38,8 +38,6 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
         tuple_t* tuple = allocateTuple();
         addTupleToRelation( tuple, relation );
 
-//        printf("line: %s", line);
-
         // Start tokenizing input...
         token = strtok(line, delim);
 
@@ -93,7 +91,7 @@ void row_iter( tuple_t* tuple )
 {
   printf("  {");
   iterateElements( tuple, elem_iter );  
-  printf("}\n");
+  printf("  }\n");
 
   return;
 }
@@ -318,14 +316,15 @@ static char* group_field;
 
 static void group_iter( tuple_t* tuple )
 {
-  static relation_t* cur_output_relation;
-  static element_t* last_element;
+  static relation_t* cur_output_relation = (relation_t*)0;
+  static element_t* last_element = (element_t*)0;
   element_t *cur_element;
   static int first = 1;
 
   assert(tuple);
 
   cur_element = copyElement( retrieveElement( tuple, group_field ) );
+  printf("Current Element is "); printElement(cur_element); printf("\n");
 
   // Internally, the group is represented as follows:
   //
@@ -333,8 +332,6 @@ static void group_iter( tuple_t* tuple )
   //
   //  internal_relation->( tuple, tuple, ... )
   //
-
-  // 
 
   if (!first)
   {
@@ -350,18 +347,24 @@ static void group_iter( tuple_t* tuple )
     ext_push( copyElement( cur_element ) );
     ext_push( copyElement( last_element ) );
 
+//printElement( cur_element ); printf("\n");
+//printElement( last_element ); printf("\n");
+
     ret_element = interpret_go( instr );
 
     assert( ret_element->type == BOOLEAN );
 
+//printf("Compare result %ld\n", ret_element->u.l);
+
     // If they're different, it's a new group.
-    if (ret_element->u.l == 0) first = 1;
+    if (ret_element->u.l == 0) 
+    {
+//      freeElement( last_element );
+//      last_element = copyElement( cur_element );
+      first = 1;
+    }
 
     freeElement( ret_element );
-  }
-  else
-  {
-    last_element = copyElement( cur_element );
   }
 
   // If we're working on a new group, allocate a new root tuple
@@ -369,6 +372,10 @@ static void group_iter( tuple_t* tuple )
   {
     element_t *group_element, *internal_tuple;
     tuple_t* group_tuple;
+
+    // Store the current element we're working with (for aggregation).
+    if (last_element) freeElement( last_element );
+    last_element = copyElement( cur_element );
 
     group_tuple = allocateTuple( );
 
@@ -378,12 +385,18 @@ static void group_iter( tuple_t* tuple )
 
     // Create a internal tuple for the list.
     internal_tuple = allocateElement( );
+    strcpy( internal_tuple->name, "group");
     internal_tuple->type = RELATION;
 
     // Create an anonymous relation (list of tuples)
     internal_tuple->u.r = calloc( 1, sizeof( relation_t) );
-    strcpy( internal_tuple->name, "group");
     cur_output_relation = internal_tuple->u.r;
+    cur_output_relation->tuple_list.first = 
+        cur_output_relation->tuple_list.last = NULL;
+
+    addElementToTuple( internal_tuple, group_tuple );
+
+    addTupleToRelation( group_tuple, output_relation );
 
     first = 0;
   }
@@ -391,6 +404,7 @@ static void group_iter( tuple_t* tuple )
   // Add the current tuple to the list
   {
     tuple_t* temp_tuple = allocateTuple( );
+    assert(temp_tuple);
     copyTuple( temp_tuple, tuple );
     addTupleToRelation( temp_tuple, cur_output_relation );
   }
