@@ -452,6 +452,12 @@ static void op_eq( void )
     op1->type = BOOLEAN;
     push( op1 );
   }
+  else if ( ( op1->type == NUL ) && ( op2->type == NUL ) )
+  {
+    op1->u.l = 1;
+    op1->type = BOOLEAN;
+    push( op1 );
+  }
   else if ( ( op1->type == NUL ) || ( op2->type == NUL ) )
   {
     op1->u.l = 0;
