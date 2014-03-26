@@ -16,3 +16,5 @@ sorted2 = SORT counted BY count
 
 DUMP sorted2
 DESCRIBE sorted2
+
+STORE sorted2 INTO counts.txt DELIM ','

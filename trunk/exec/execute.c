@@ -26,9 +26,6 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
   else 
   {
 
-//    printf("executeLoad: relation %s, filename %s, delim %c\n", 
-//            relation_name, filename, delim);
-
     relation = allocateRelation( relation_name );
     if (relation)
     {
@@ -59,8 +56,6 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
 
           addElementToTuple( element, tuple );
 
-//          printf("token: %s\n", item);
-
           token = strtok(NULL, delim);
 
         }
@@ -75,6 +70,57 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
     }
 
   }
+
+  return ret;
+}
+
+
+static FILE* storefp;
+static char delimiter;
+
+void store_elem_iter( element_t* element )
+{
+  printElement( element );
+  if (element->node.next != NULL) printf("%c", delimiter);
+}
+
+
+void store_row_iter( tuple_t* tuple )
+{
+  iterateElements( tuple, store_elem_iter );  
+
+  return;
+}
+
+int executeStore( char* relation_name, char* filename, char delim )
+{
+  int ret;
+  relation_t* relation;
+
+  storefp = fopen(filename, "w");
+  if (storefp)
+  {
+    relation = findRelation( relation_name );
+    if (relation)
+    {
+      delimiter = delim;
+      iterateRows( relation, store_row_iter );
+      ret = 0;
+    }
+    else
+    {
+      printf("Could not find relation %s\n", relation_name);
+      ret = -1;
+    }
+
+  }
+  else
+  {
+    printf("Unable to open %s for STORE.\n", filename);
+    ret = -1;
+  }
+
+  fclose( storefp );
 
   return ret;
 }

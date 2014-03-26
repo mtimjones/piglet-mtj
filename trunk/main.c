@@ -67,6 +67,10 @@ int execute_script( char* script )
     {
       ret = parseGroup( line );
     }
+    else if ( strstr( line, "STORE" ) != NULL )
+    {
+      ret = parseStore( line );
+    }
     else
     {
       printf("Cannot parse line %d\n", linenum);
