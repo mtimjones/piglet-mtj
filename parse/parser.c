@@ -11,12 +11,29 @@ int parseLoad( char* line )
   char delim;
   int ret;
   
-  ret = sscanf(line, "%s = LOAD %s DELIM '%c'", relation, filename, &delim);
+  ret = sscanf( line, "%s = LOAD %s DELIM '%c'", relation, filename, &delim );
 
   // Expecting 3 parsed arguments.
-  if (ret == 3)
+  if ( ret == 3 )
   {
     ret = executeLoad( relation, filename, delim ); 
+  }
+
+  return ret;
+}
+
+int parseStore( char* line )
+{
+  char relation[MAX_RELATION_NAME];
+  char filename[MAX_FILENAME];
+  char delim;
+  int  ret;
+
+  ret = sscanf( line, "STORE %s INTO %s DELIM '%c'", relation, filename, &delim );
+
+  if ( ret == 3 )
+  {
+    ret = executeStore( relation, filename, delim );
   }
 
   return ret;
