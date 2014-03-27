@@ -18,3 +18,7 @@ DUMP sorted2
 DESCRIBE sorted2
 
 STORE sorted2 INTO counts.txt DELIM ','
+STORE filtered INTO new.txt DELIM ','
+
+stuff = LOAD new.txt DELIM ','
+DUMP stuff

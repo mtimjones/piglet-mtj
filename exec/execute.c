@@ -78,16 +78,48 @@ int executeLoad( char* relation_name, char* filename, char delimiter )
 static FILE* storefp;
 static char delimiter;
 
+// @TODO: Does not yet emit relations...
 void store_elem_iter( element_t* element )
 {
-  printElement( element );
-  if (element->node.next != NULL) printf("%c", delimiter);
+  int i;
+
+  switch( element->type)
+  {
+    case LONG:
+      fprintf( storefp, "%ld", element->u.l );
+      break;
+    case DOUBLE:
+      fprintf( storefp, "%lg", element->u.g );
+      break;
+    case NUL:
+      fprintf( storefp, "NUL" );
+      break;
+    case TUPLE:
+    case RELATION:
+      fprintf( storefp, "TBD" );
+      break;
+    case BOOLEAN:
+      fprintf( storefp, "%s", ((element->u.l) ? "TRUE" : FALSE ) );
+      break;
+    case CHARARRAY:
+    case BYTEARRAY:
+      for (i = 0 ; i < element->size ; i++) fprintf( storefp, "%c", element->u.s[i] );
+      break;
+    default:
+      assert( 0 );
+      break;
+  }
+
+  if (element->node.next != NULL) fprintf( storefp, "%c", delimiter );
+
+  return;
 }
 
 
 void store_row_iter( tuple_t* tuple )
 {
   iterateElements( tuple, store_elem_iter );  
+  fprintf( storefp, "\n" );
 
   return;
 }
@@ -137,7 +169,10 @@ void row_iter( tuple_t* tuple )
 {
   printf("  {");
   iterateElements( tuple, elem_iter );  
-  printf("  }\n");
+  printf("}");
+
+  if (tuple->node.next != NULL) printf(",");
+  printf("\n");
 
   return;
 }
