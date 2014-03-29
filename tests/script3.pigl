@@ -12,12 +12,13 @@ grouped = GROUP sorted BY state
 # Count the number of tuples in the inner relation (group)
 counted = FOREACH grouped GENERATE [state]:CHARARRAY:state, [group COUNT]:LONG:count
 
-maxed = FILTER counted BY [count 50 > ]:BOOLEAN:test
-
-sorted2 = SORT maxed BY count
+sorted2 = SORT counted BY count
 
 DUMP sorted2
 DESCRIBE sorted2
 
 STORE sorted2 INTO counts.txt DELIM ','
 STORE filtered INTO new.txt DELIM ','
+
+stuff = LOAD new.txt DELIM ','
+DUMP stuff
