@@ -62,7 +62,7 @@ int parseToken( char* output, int length )
   while (1)
   {
     chr = *current++;
-    if (delimFound( delimiter, chr ))
+    if ( ( delimFound( delimiter, chr ) ) || (*current == 0) )
     {
       *output = 0;
       return 1;

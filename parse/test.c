@@ -3,7 +3,7 @@
 #include <string.h>
 #include <assert.h>
 
-#define MAX_TOKEN	30
+#define MAX_TOKEN	80
 
 char sample[200];
 char token[MAX_TOKEN];

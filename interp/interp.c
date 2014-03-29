@@ -470,6 +470,42 @@ static void op_eq( void )
 }
 
 
+static void op_and( void )
+{
+  element_t *op1, *op2;
+
+  op1 = pop( ); op2 = pop( );
+  assert( op1 ); assert( op2 );
+
+  assert( op1->type == BOOLEAN );
+  assert( op2->type == BOOLEAN );
+
+  op1->u.l = ( op1->u.l && op2->u.l );
+  push( op1 );
+  free( (void *)op2 );
+
+  return;
+}
+
+
+static void op_or( void )
+{
+  element_t *op1, *op2;
+
+  op1 = pop( ); op2 = pop( );
+  assert( op1 ); assert( op2 );
+
+  assert( op1->type == BOOLEAN );
+  assert( op2->type == BOOLEAN );
+
+  op1->u.l = ( op1->u.l || op2->u.l );
+  push( op1 );
+  free( (void *)op2 );
+
+  return;
+}
+
+
 static void op_strlen( void )
 {
   element_t *op1;
@@ -554,22 +590,22 @@ element_t* interpret_go( char* instr )
 
   while (token)
   {
-    if      (token[0] == '\"') push( convertStringToElement( token ) );
-    else if (isDouble(token)) push( convertStringToDoubleElement( token ) );
-    else if (isNumber(token)) push( convertStringToLongElement( token ) );
-    else if (!strncmp(token, ">=", 2))  op_gte();
-    else if (!strncmp(token, "<=", 2))  op_lte();
-    else if (!strncmp(token, "==", 2))  op_eq();
-    else if (token[0] == '<')           op_lt();
-    else if (token[0] == '>')           op_gt();
-    else if (token[0] == '*')           op_mul();
-    else if (token[0] == '/')           op_div();
-    else if (token[0] == '+')           op_add();
-    else if (token[0] == '-')           op_sub();
-    else if (!strncmp(token, "STRLEN", 6)) op_strlen();
-    else if (!strncmp(token, "COUNT", 5)) op_count();
-//    else if (!strncmp(token, "&&", 2)  op_and();
-//    else if (!strncmp(token, "||", 2)  op_or();
+    if      ( token[0] == '\"' ) push( convertStringToElement( token ) );
+    else if ( isDouble(token) ) push( convertStringToDoubleElement( token ) );
+    else if ( isNumber(token) ) push( convertStringToLongElement( token ) );
+    else if ( !strncmp(token, ">=", 2 ) )  op_gte();
+    else if ( !strncmp(token, "<=", 2 ) )  op_lte();
+    else if ( !strncmp(token, "==", 2 ) )  op_eq();
+    else if ( token[0] == '<' )            op_lt();
+    else if ( token[0] == '>' )            op_gt();
+    else if ( token[0] == '*' )            op_mul();
+    else if ( token[0] == '/' )            op_div();
+    else if ( token[0] == '+' )            op_add();
+    else if ( token[0] == '-' )            op_sub();
+    else if ( !strncmp(token, "STRLEN", 6 ) ) op_strlen();
+    else if ( !strncmp(token, "COUNT", 5 ) )  op_count();
+    else if ( !strncmp(token, "&&", 2 ) )  op_and();
+    else if ( !strncmp(token, "||", 2 ) )  op_or();
     else if ( ( token[0] == '$' ) || ( isalpha( token[0] ) ) )
     {
       element_t* element;

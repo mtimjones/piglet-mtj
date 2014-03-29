@@ -73,7 +73,7 @@ int parseDescribe( char* line )
 }
 
 
-#define MAX_TOK		50
+#define MAX_TOK		256
 
 int parseForeach( char* line )
 {
@@ -234,6 +234,8 @@ int parseFilter( char* line )
 
   if (parseToken(token, MAX_TOK))
   {
+
+printf("token is %s\n", token);
 
     ret = parseExpression( token, 
                            expression.expr_str,
