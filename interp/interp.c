@@ -287,7 +287,7 @@ static void op_div( void )
 {
   element_t *op1, *op2;
 
-  op2 = pop(); op1 = pop();
+  op1 = pop(); op2 = pop();
   assert( op1 ); assert( op2 );
 
   normalize_types( op1, op2 );

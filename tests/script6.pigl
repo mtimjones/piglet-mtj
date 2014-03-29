@@ -1,0 +1,20 @@
+
+# Ingest the raw data
+rawdata = LOAD cities2.csv DELIM ','
+
+# reduce the dataset to four fields
+subset = FOREACH rawdata GENERATE [$0]:CHARARRAY:city, [$3]:LONG:pop1980, [$5]:LONG:pop2000
+
+# Cleanse the dataset
+cleansed = FILTER subset BY [pop1980 0 >]:BOOLEAN:test
+
+# Convert to doubles
+converted = FOREACH cleansed GENERATE [city]:CHARARRAY:city, [pop1980]:DOUBLE:pop1980, [pop2000]:DOUBLE:pop2000
+
+# Find the growth rate between 1980 and 2000
+growth = FOREACH converted GENERATE [city]:CHARARRAY:city, [pop1980 pop2000 pop1980 - / 100.0 *]:DOUBLE:rate
+
+# Sort the resutls
+sorted = SORT growth BY rate
+
+DUMP sorted
