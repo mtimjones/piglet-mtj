@@ -30,6 +30,14 @@ expression tests the equality of the first two named fields:
 
   [field1 field2 ==]:BOOLEAN:test
 
+Or testing whether a string is more than < 2 characters:
+
+  [string1 STRLEN 2 <]:BOOLEAN:test
+
+Or testing a string to be equal to a given sequence:
+
+  [state "CO" ==]:BOOLEAN:test
+
 A number of postfix operators are available for use, including:
 
   +, -, *, /        Arithmetic operations
@@ -37,4 +45,5 @@ A number of postfix operators are available for use, including:
   &&, ||            Boolean operations
   STRLEN            length of a string (top object on stack)
   COUNT             Apply to a group to count members
+
 
