@@ -12,7 +12,7 @@ The following operators are supported:
 
   <relation> = FILTER <relation> BY <expr>
 
-  <relation> = SORT <relation> BY <field>
+  <relation> = SORT <relation> BY <field> [ASCEND | DESCEND]
 
   DUMP <relation>
 
@@ -46,4 +46,4 @@ A number of postfix operators are available for use, including:
   STRLEN            length of a string (top object on stack)
   COUNT             Apply to a group to count members
 
-
+See the ./tests subdirectory for script examples.

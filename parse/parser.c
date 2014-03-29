@@ -235,8 +235,6 @@ int parseFilter( char* line )
   if (parseToken(token, MAX_TOK))
   {
 
-printf("token is %s\n", token);
-
     ret = parseExpression( token, 
                            expression.expr_str,
                            &expression.type,

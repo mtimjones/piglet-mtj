@@ -1,0 +1,14 @@
+# Read in the earthquakes data and build a relation with a schema
+edata = LOAD equakes.txt DELIM ','
+
+filtered = FILTER edata BY [$0 STRLEN 2 ==]:BOOLEAN:test
+
+# Find only those records indicating a 5.5 or greater earthquake
+large = FILTER filtered BY [$8 5.5 >=]:BOOLEAN:test
+
+# Emit only the region and size
+output = FOREACH large GENERATE [$11]:CHARARRAY:region, [$8]:DOUBLE:size
+
+sorted = SORT output BY size
+
+DUMP sorted
