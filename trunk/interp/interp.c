@@ -56,22 +56,32 @@ static int isNumber( char *str )
 
 static int isDouble( char *str )
 {
-  int len = 0;
   assert(str);
 
-  if (*str == '-')
-    ++str;
+  // Look for sign first (optional)
+  if (*str == '-') ++str;
 
-  while (*str)
+  // Look for a sequence of digits
+  while (*str) 
   {
-    // Need to fix (no more than one '.'
-    if (!isdigit(*str) || (*str != '.')) return 0;
-    else ++str;
-    len++;
+    if ( isdigit(*str) ) str++;
+    else break;
   }
 
-  if (len == 0) return 0;
-  else return 1;
+  // Look for a decimal point
+  if ( !(*str) ) return 0;
+  if ( *str != '.' ) return 0;
+
+  str++;
+
+  // Look for a sequence of digits
+  while (*str) 
+  {
+    if ( isdigit(*str) ) str++;
+    else break;
+  }
+
+  return 1;
 }
 
 
@@ -616,6 +626,7 @@ element_t* interpret_go( char* instr )
 
     else 
     {
+      printf("Found bad token %s\n", token);
       assert(0);
     }
 
