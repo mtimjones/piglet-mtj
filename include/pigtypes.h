@@ -16,7 +16,7 @@
 #define NUL        7
 #define RELATION   8
 
-#define MAX_NAME	60
+#define MAX_NAME	128
 
 #define TRUE       1
 #define FALSE      0

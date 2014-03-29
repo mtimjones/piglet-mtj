@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#define MAX_RELATIONS		20
+#define MAX_RELATIONS		128
 
 relation_t* relations[MAX_RELATIONS];
 
