@@ -1,0 +1,14 @@
+# Find and output the number of collections by region
+
+# Read in the earthquakes data and build a relation with a schema
+edata = LOAD equakes.txt DELIM ','
+
+# Filter the dataset by valid source
+filtered = FILTER edata BY [$0 STRLEN 2 ==]:BOOLEAN:test
+
+sorted = SORT filtered BY $0
+grouped = GROUP sorted BY $0
+
+output = FOREACH grouped GENERATE [$0]:CHARARRAY:source, [group COUNT]:LONG:count
+
+DUMP output
