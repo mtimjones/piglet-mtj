@@ -336,6 +336,15 @@ static void op_gt( void )
     op1->type = BOOLEAN;
     freeElement( op2 ); push( op1 );
   }
+  else if ( ( ( op1->type == CHARARRAY ) || ( op1->type == BYTEARRAY ) ) &&
+            ( ( op2->type == CHARARRAY ) || ( op2->type == BYTEARRAY ) ) )
+  {
+    op1->u.l = strcmp( op1->u.s, op2->u.s );
+    if (op1->u.l == 1) op1->u.l = 1;
+    else op1->u.l = 0;
+    op1->type = BOOLEAN;
+    freeElement( op2 ); push( op1 );
+  }
   else assert( 0 );
 
   return;
@@ -376,15 +385,24 @@ static void op_lt( void )
 
   normalize_types( op1, op2 );
 
-  if      (  ( op1->type == LONG ) && ( op2->type == LONG ) )
+  if      ( ( op1->type == LONG ) && ( op2->type == LONG ) )
   {
     op1->u.l = ( op1->u.l < op2->u.l );
     op1->type = BOOLEAN;
     freeElement( op2 ); push( op1 );
   }
-  else if (  ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
+  else if ( ( op1->type == DOUBLE ) && ( op2->type == DOUBLE ) )
   {
     op1->u.l = ( op1->u.g < op2->u.g );
+    op1->type = BOOLEAN;
+    freeElement( op2 ); push( op1 );
+  }
+  else if ( ( ( op1->type == CHARARRAY ) || ( op1->type == BYTEARRAY ) ) &&
+            ( ( op2->type == CHARARRAY ) || ( op2->type == BYTEARRAY ) ) )
+  {
+    op1->u.l = strcmp( op1->u.s, op2->u.s );
+    if (op1->u.l == -1) op1->u.l = 1;
+    else op1->u.l = 0;
     op1->type = BOOLEAN;
     freeElement( op2 ); push( op1 );
   }

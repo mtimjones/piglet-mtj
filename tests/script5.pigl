@@ -11,4 +11,6 @@ grouped = GROUP sorted BY $0
 
 output = FOREACH grouped GENERATE [$0]:CHARARRAY:source, [group COUNT]:LONG:count
 
-DUMP output
+sorted2 = SORT output BY count DESCEND
+
+DUMP sorted2

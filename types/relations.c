@@ -44,7 +44,7 @@ relation_t* allocateRelation( char* name )
   {
     if (!relations[i])
     {
-      relations[i] = malloc(sizeof(relation_t));
+      relations[i] = calloc(1, sizeof(relation_t));
       strncpy(relations[i]->name, name, strlen(name));
       relations[i]->tuple_list.first = relations[i]->tuple_list.last = NULL;
       return relations[i];

@@ -271,6 +271,8 @@ int executeForeach( relation_t* input, relation_t* output, expr_t* expressions )
   }
 #endif
 
+  assert( input ) ; assert( output ); assert( expressions );
+
   output_relation = output;
   exprs = expressions;
 

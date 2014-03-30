@@ -7,8 +7,10 @@ filtered = FILTER edata BY [$0 STRLEN 2 ==]:BOOLEAN:test
 large = FILTER filtered BY [$8 5.5 >=]:BOOLEAN:test
 
 # Emit only the region and size
-output = FOREACH large GENERATE [$11]:CHARARRAY:region, [$8]:DOUBLE:size
+subset = FOREACH large GENERATE [$11]:CHARARRAY:region, [$8]:DOUBLE:size
 
-sorted = SORT output BY size
+DUMP subset
+
+sorted = SORT subset BY size DESCEND
 
 DUMP sorted
