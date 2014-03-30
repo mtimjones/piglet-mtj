@@ -15,6 +15,6 @@ converted = FOREACH cleansed GENERATE [city]:CHARARRAY:city, [pop1980]:DOUBLE:po
 growth = FOREACH converted GENERATE [city]:CHARARRAY:city, [pop1980 pop2000 pop1980 - / 100.0 *]:DOUBLE:rate
 
 # Sort the resutls
-sorted = SORT growth BY rate
+sorted = SORT growth BY rate DESCEND
 
 DUMP sorted
