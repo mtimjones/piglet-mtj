@@ -6,13 +6,13 @@ newdata = FOREACH mydata GENERATE [$0]:CHARARRAY:name, [$1]:CHARARRAY:city, [$2]
 filtered = FILTER newdata BY [state STRLEN 2 ==]:BOOLEAN:test
 
 # Sort and Group the data by state
-sorted = SORT filtered BY state
+sorted = SORT filtered BY state DESCEND
 grouped = GROUP sorted BY state
 
 # Count the number of tuples in the inner relation (group)
 counted = FOREACH grouped GENERATE [state]:CHARARRAY:state, [group COUNT]:LONG:count
 
-sorted2 = SORT counted BY count
+sorted2 = SORT counted BY count DESCEND
 
 DUMP sorted2
 DESCRIBE sorted2
@@ -21,4 +21,4 @@ STORE sorted2 INTO counts.txt DELIM ','
 STORE filtered INTO new.txt DELIM ','
 
 stuff = LOAD new.txt DELIM ','
-DUMP stuff
+#DUMP stuff
