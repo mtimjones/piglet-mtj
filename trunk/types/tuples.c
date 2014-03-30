@@ -102,7 +102,9 @@ void insertTupleSorted( tuple_t* tuple, relation_t* output,
 {
   link_t* link;
   element_t *element_to_add, *element_to_compare;
+  element_t *result;
   int added = 0;
+  char instr[10];
 
   assert( tuple ); assert( output ); assert( field );
 
@@ -122,8 +124,18 @@ void insertTupleSorted( tuple_t* tuple, relation_t* output,
 
       element_to_compare = retrieveElement( (tuple_t*)link, field );
 
+      interpret_init();
+      ext_push( copyElement(element_to_add) );
+      ext_push( copyElement(element_to_compare) );
+      if (dir == DESCEND) strcpy( instr, ">" );
+      else strcpy( instr, "<" );
+
+      result = interpret_go( instr );
+
+      assert( result->type == BOOLEAN );
+
       // Add before this item
-      if ( compareElements( element_to_add, element_to_compare ) )
+      if (result->u.l)
       {
         ((link_t*)tuple)->prev = ((link_t*)tuple)->next = NULL;
         if (link == output->tuple_list.first) {
@@ -141,6 +153,8 @@ void insertTupleSorted( tuple_t* tuple, relation_t* output,
         added = 1;
         break;
       }
+
+      freeElement( result );
 
     }
 

@@ -119,50 +119,6 @@ void printType( int type )
 }
 
 
-int compareElements( element_t* elem1, element_t* elem2 )
-{
-  assert(elem1); assert(elem2);
-
-  if ( ((elem1->type == NUL) && (elem2->type != NUL)) ||
-       ((elem2->type == NUL) && (elem1->type != NUL)) )
-  {
-    return 0;
-  }
-
-  // Both types should be the same...
-  assert( elem1->type == elem2->type );
-
-  if        ( elem1->type == CHARARRAY )
-  {
-    return ( strcmp( elem1->u.s, elem2->u.s ) < 0);
-  }
-  else if ( elem1->type == BYTEARRAY )
-  {
-    return ( strcmp( elem1->u.s, elem2->u.s ) < 0);
-  }
-  else if ( elem1->type == LONG )
-  {
-    return ( elem1->u.l < elem2->u.l );
-  }
-  else if ( elem1->type == DOUBLE )
-  {
-    return ( elem1->u.g < elem2->u.g );
-  }
-  else if ( elem1->type == BOOLEAN )
-  {
-    return ( elem1->u.l < elem2->u.l );
-  }
-  else if ( elem1->type == NUL )
-  {
-    return 0;
-  }
-
-  assert(0);
-
-  return 0;
-}
-
-
 element_t* copyElement( element_t* source )
 {
   element_t* target = allocateElement( );

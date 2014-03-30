@@ -152,7 +152,6 @@ void printByteArray( element_t* element );
 element_t* retrieveElement( tuple_t* tuple, char* name );
 element_t* copyElement( element_t* element );
 void convertElement( element_t* element, int type );
-int compareElements( element_t* elem1, element_t* elem2 );
 
 typedef void (*row_iterator_t)( tuple_t* tuple );
 typedef void (*element_iterator_t)( element_t* element );
